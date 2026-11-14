@@ -119,7 +119,11 @@ add("Components", "Turbine isentropic efficiency", P["eta_t"], "-")
 add("Components", "LTR effectiveness (enthalpy-based, at inlet pressures)", P["eps_ltr"], "-")
 add("Components", "HTR effectiveness (enthalpy-based, at inlet pressures)", P["eps_htr"], "-")
 add("Components", "Mixing is adiabatic, at equal pressure (p4 = p3)")
-add("Components", "Recuperator pinch point is NOT checked (to be added)")
+add("Components", "Recuperator pinch check: counterflow profile split into segments, pressure linear along each side", P["n_seg"], "segments")
+if P["dT_pinch"] is None:
+    add("Components", "Recuperator heat duty set by effectiveness only; pinch is reported, not enforced")
+else:
+    add("Components", "Recuperator heat duty limited so that the minimum temperature difference is at least", P["dT_pinch"], "K")
 for label, key in [("Heater", "dp_heater"), ("Cooler", "dp_cooler"),
                    ("LTR cold side", "dp_ltr_cold"), ("LTR hot side", "dp_ltr_hot"),
                    ("HTR cold side", "dp_htr_cold"), ("HTR hot side", "dp_htr_hot")]:
@@ -151,6 +155,10 @@ perf = [
     ("Total destruction / heat exergy (incl. cooler)", total_d / ex_heat * 100, "%"),
     ("Compressor pressure ratio", P["pr"], "-"),
     ("Turbine pressure ratio", res["pr_turbine"], "-"),
+    ("HTR minimum temperature difference (pinch)", res["pinch"]["HTR"]["min_dT"], "K"),
+    ("LTR minimum temperature difference (pinch)", res["pinch"]["LTR"]["min_dT"], "K"),
+    ("HTR UA per kg/s of turbine flow", res["pinch"]["HTR"]["UA"] / 1e3, "kJ/kg.K"),
+    ("LTR UA per kg/s of turbine flow", res["pinch"]["LTR"]["UA"] / 1e3, "kJ/kg.K"),
     ("Energy balance check (q_in - w_net - q_out)", bal_en, "J/kg"),
     ("Exergy balance check (ex_heat - w_net - destruction)", bal_ex, "J/kg"),
 ]
