@@ -45,3 +45,21 @@ def recuperator(fluid, hot_in, cold_in, eff):
     cold_out = state_hp(fluid, cold_in["h"] + q, cold_in["p"])
     hot_out = state_hp(fluid, hot_in["h"] - q, hot_in["p"])
     return cold_out, hot_out, q
+
+def recuperator_flows(fluid, hot_in, cold_in, eff, m_cold):
+    """Recuperator with unequal flows (per 1 kg of hot-side flow).
+    m_cold: cold-side mass flow as a fraction of the hot-side flow.
+    Effectiveness is based on enthalpy, as in recuperator().
+    Returns: (cold outlet state, hot outlet state, heat transferred in J/kg of hot flow)"""
+    q_max_hot = hot_in["h"] - PropsSI("H", "T", cold_in["T"], "P", hot_in["p"], fluid)
+    q_max_cold = m_cold * (PropsSI("H", "T", hot_in["T"], "P", cold_in["p"], fluid) - cold_in["h"])
+    q = eff * min(q_max_hot, q_max_cold)
+    cold_out = state_hp(fluid, cold_in["h"] + q / m_cold, cold_in["p"])
+    hot_out = state_hp(fluid, hot_in["h"] - q, hot_in["p"])
+    return cold_out, hot_out, q
+
+
+def mixer(fluid, a, m_a, b, m_b):
+    """Adiabatic mixing of two streams at the same pressure (energy balance on enthalpy)."""
+    h = (m_a * a["h"] + m_b * b["h"]) / (m_a + m_b)
+    return state_hp(fluid, h, a["p"])
