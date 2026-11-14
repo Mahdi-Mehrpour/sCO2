@@ -2,9 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sco2.cycle_adv import recompression_adv
 
-# ----------------------------------------------------------------------
-# 1) Pinch check of the default cycle (heat duty set by effectiveness only)
-# ----------------------------------------------------------------------
+# Pinch check of the default cycle (heat duty set by effectiveness only)
 res = recompression_adv()
 print(f"Default cycle: eta = {res['eta']*100:.2f} %  (must still be 40.97 %)\n")
 
@@ -38,32 +36,3 @@ for ax, name in zip(axes, ("HTR", "LTR")):
 fig.tight_layout()
 fig.savefig("figures/adv/recuperator_QT.png", dpi=150)
 print("\nFigure saved: figures/adv/recuperator_QT.png")
-
-# ----------------------------------------------------------------------
-# 2) Effect of enforcing a minimum temperature difference
-# ----------------------------------------------------------------------
-dTs = [3, 5, 8, 10, 15, 20]
-etas, rows = [], []
-for d in dTs:
-    r = recompression_adv(dT_pinch=d)
-    etas.append(r["eta"] * 100)
-    rows.append((d, r["eta"] * 100, r["q_htr"] / 1e3, r["q_ltr"] / 1e3,
-                 r["pinch"]["HTR"]["min_dT"], r["pinch"]["LTR"]["min_dT"],
-                 (r["pinch"]["HTR"]["UA"] + r["pinch"]["LTR"]["UA"]) / 1e3))
-
-print("\nEnforced minimum temperature difference:")
-print(f"{'dT_pinch':>8s} {'eta (%)':>8s} {'Q_HTR':>8s} {'Q_LTR':>8s} "
-      f"{'minHTR':>7s} {'minLTR':>7s} {'UA tot':>8s}")
-for row in rows:
-    print(f"{row[0]:8.1f} {row[1]:8.2f} {row[2]:8.2f} {row[3]:8.2f} "
-          f"{row[4]:7.2f} {row[5]:7.2f} {row[6]:8.3f}")
-
-plt.figure()
-plt.plot(dTs, etas, "o-", label="Pinch enforced")
-plt.axhline(res["eta"] * 100, color="gray", ls="--", label="Effectiveness only")
-plt.xlabel("Minimum temperature difference in recuperators (K)")
-plt.ylabel("Thermal efficiency (%)")
-plt.grid(True)
-plt.legend()
-plt.savefig("figures/adv/eta_vs_dT_pinch.png", dpi=150)
-print("Figure saved: figures/adv/eta_vs_dT_pinch.png")
