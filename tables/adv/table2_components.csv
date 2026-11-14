@@ -1,0 +1,9 @@
+﻿Component,Energy performance metric,Energy efficiency (%),Exergy efficiency (%),Exergy destruction (kJ/kg),Share of heat exergy (%),Share of total destruction (%)
+Main compressor,Isentropic efficiency,85.0,86.6,2.018,1.55,4.33
+Recompressor,Isentropic efficiency,85.0,89.57,1.843,1.41,3.95
+Turbine,Isentropic efficiency,90.0,95.55,5.423,4.16,11.63
+HTR,Effectiveness (enthalpy-based),90.0,89.74,14.764,11.32,31.65
+LTR,Effectiveness (enthalpy-based),90.0,82.28,6.388,4.9,13.69
+Mixer,Adiabatic mixing (energy balance),100.0,100.0,0.001,0.0,0.0
+Heater,All source heat goes to the CO2 (no heat loss),100.0,92.48,9.811,7.52,21.03
+Cooler (exergy loss to environment),Heat rejected to the environment,n/a,n/a,6.397,4.9,13.71

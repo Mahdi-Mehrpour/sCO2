@@ -1,0 +1,11 @@
+﻿State,Description,Mass fraction (-),T (K),T (C),P (MPa),h (kJ/kg),s (kJ/kg.K),ex (kJ/kg)
+1,Main compressor inlet,0.7,305.15,32.0,7.7,306.234,1.34631,214.97
+2,Main compressor outlet,0.7,334.47,61.32,20.02,327.753,1.35598,233.606
+3,LTR cold outlet,0.7,429.82,156.67,19.8198,534.712,1.90798,275.986
+4,Recompressor outlet,0.3,431.66,158.51,19.8198,537.62,1.91473,276.881
+5,Mixer outlet (HTR cold inlet),1.0,430.37,157.22,19.8198,535.584,1.91001,276.254
+6,HTR cold outlet,1.0,656.9,383.75,19.6216,831.148,2.46801,405.45
+7,Turbine inlet (heater outlet),1.0,823.15,550.0,19.2292,1035.68,2.74939,526.087
+8,Turbine outlet,1.0,717.48,444.33,7.9357,919.139,2.76758,404.123
+9,HTR hot outlet (LTR hot inlet),1.0,458.55,185.4,7.8563,623.574,2.2591,260.162
+10,LTR hot outlet (split point),1.0,343.3,70.15,7.7778,478.703,1.89412,224.108
