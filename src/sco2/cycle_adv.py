@@ -259,3 +259,80 @@ def recompression_cascade(fluid="CO2", T1=305.15, p1=7.7e6, pr=2.6,
             "q_htr": q_htr, "q_ltr": q_ltr, "pinch": pinch,
             "x": x, "y": y, "pr_turbine": p7 / p8,
             "eta": w_net / (q_in + q_b)}
+
+
+
+def splitflow_adv(fluid="CO2", T1=305.15, p1=7.7e6, pr=3.5,
+                  T7=823.15, eta_mc=0.85, eta_t=0.90,
+                  eps_ltr=0.90, eps_htr=0.90, y=0.29, T_b=612.15,
+                  dp_heater=0.02, dp_cooler=0.01,
+                  dp_ltr_cold=0.01, dp_ltr_hot=0.01,
+                  dp_htr_cold=0.01, dp_htr_hot=0.01,
+                  n_seg=30, check_pinch=True):
+    """Split-flow cycle without recompressor (main model for the EAF case).
+
+    The main compressor carries the full flow. A fraction y is taken at
+    state 2 and heated to T_b in a second heater (state 11, fed by the gas
+    leaving the main heater). The rest, 1-y, goes through the LTR. Both
+    streams are mixed at state 5 (HTR cold inlet).
+    State numbering follows recompression_cascade(); state 4 does not exist.
+    Flows are per 1 kg of CO2 through the turbine.
+    The branch heater pressure drop equals the LTR cold side drop, so the
+    branch arrives at the mixer pressure (p3) without throttling."""
+    m_ltr = 1.0 - y
+    if y < 0.02 or y > 0.98:
+        raise ValueError("Invalid branch fraction: need 0.02 <= y <= 0.98")
+
+    # --- Pressure levels ---
+    p2 = p1 * pr
+    p3 = p2 * (1 - dp_ltr_cold)
+    p5 = p3
+    p6 = p5 * (1 - dp_htr_cold)
+    p7 = p6 * (1 - dp_heater)
+    p10 = p1 / (1 - dp_cooler)
+    p9 = p10 / (1 - dp_ltr_hot)
+    p8 = p9 / (1 - dp_htr_hot)
+
+    # --- Main compressor, turbine, branch outlet ---
+    s1 = _state_Tp(fluid, T1, p1)
+    s2, w_mc = _compressor(fluid, s1, p2, eta_mc)
+    if T_b <= s2["T"] + 5.0:
+        raise ValueError("Branch outlet temperature must be above state 2")
+    s_b = _state_Tp(fluid, T_b, p3)
+    s7 = _state_Tp(fluid, T7, p7)
+    s8, w_t = _turbine(fluid, s7, p8, eta_t)
+
+    # --- Recuperators and two-stream mixer (circular, solved by iteration) ---
+    s5 = _state_hp(fluid, s2["h"], p5)
+    for _ in range(200):
+        s6, s9, q_htr = _recuperator(fluid, s8, s5, eps_htr, 1.0,
+                                     dp_htr_hot, dp_htr_cold, None, n_seg)
+        s3, s10, q_ltr = _recuperator(fluid, s9, s2, eps_ltr, m_ltr,
+                                      dp_ltr_hot, dp_ltr_cold, None, n_seg)
+        h5 = m_ltr * s3["h"] + y * s_b["h"]
+        s5_new = _state_hp(fluid, h5, p5)
+        done = abs(s5_new["h"] - s5["h"]) < 1e-3
+        s5 = s5_new
+        if done:
+            break
+    else:
+        raise RuntimeError("Recuperator iteration did not converge")
+
+    pinch = None
+    if check_pinch:
+        pinch = {"HTR": _pinch_profile(fluid, s8, s5, q_htr, 1.0,
+                                       dp_htr_hot, dp_htr_cold, n_seg),
+                 "LTR": _pinch_profile(fluid, s9, s2, q_ltr, m_ltr,
+                                       dp_ltr_hot, dp_ltr_cold, n_seg)}
+
+    q_in = s7["h"] - s6["h"]              # main heater
+    q_b = y * (s_b["h"] - s2["h"])        # branch heater
+    q_out = s10["h"] - s1["h"]            # cooler (full flow)
+    w_net = w_t - w_mc
+    return {"states": {1: s1, 2: s2, 3: s3, 5: s5, 6: s6, 7: s7,
+                       8: s8, 9: s9, 10: s10, 11: s_b},
+            "w_mc": w_mc, "w_rc": 0.0, "w_t": w_t, "w_net": w_net,
+            "q_in": q_in, "q_b": q_b, "q_out": q_out,
+            "q_htr": q_htr, "q_ltr": q_ltr, "pinch": pinch,
+            "x": 0.0, "y": y, "pr_turbine": p7 / p8,
+            "eta": w_net / (q_in + q_b)}            

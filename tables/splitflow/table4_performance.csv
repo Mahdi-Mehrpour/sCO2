@@ -1,0 +1,33 @@
+﻿Parameter,Value,Unit
+Gas inlet temperature,800.0,C
+Gas mass flow,25.0,kg/s
+Gas stack temperature,159.3782,C
+Gas temperature between the heaters,397.3052,C
+Heat available down to the minimum stack temperature,19.0072,MW
+"Heat delivered, main heater",12.1426,MW
+"Heat delivered, branch heater",6.6122,MW
+Share of available heat used,98.6717,%
+CO2 mass flow (turbine),55.5462,kg/s
+Net power,7.065,MW
+Cycle thermal efficiency (net power / heat delivered),37.6706,%
+Heat recovery efficiency (net power / available heat),37.1702,%
+Exergy of gas at inlet,11.5425,MW
+System exergy efficiency (net power / gas exergy),61.209,%
+Cycle exergy efficiency (net power / exergy gained by the CO2),74.7371,%
+"Exergy destruction, heaters",1.4647,MW
+"Exergy destruction, cycle components (HTR, LTR, mixer, turbine, compressor)",1.5386,MW
+Exergy loss in the cooler,0.8495,MW
+"Total exergy destruction (heaters, cycle, cooler)",3.8529,MW
+Exergy lost with the stack gas,0.6246,MW
+Total exergy losses (destruction + stack),4.4774,MW
+Compressor pressure ratio,3.8959,-
+Turbine pressure ratio,3.6309,-
+Main heater minimum temperature difference,20.0,K
+Branch heater minimum temperature difference,50.0175,K
+HTR minimum temperature difference,10.0,K
+LTR minimum temperature difference,19.8104,K
+HTR UA per kg/s of turbine flow,6.8536,kJ/kg.K
+LTR UA per kg/s of turbine flow,8.1929,kJ/kg.K
+Energy balance check (q_in + q_b - w_net - q_out),0.0009,J/kg
+Exergy balance check (system),-0.0,MW
+Limiting constraint of the gas coupling,main heater pinch,

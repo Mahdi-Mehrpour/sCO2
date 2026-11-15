@@ -1,0 +1,16 @@
+﻿Parameter,"Baseline (x, pr)",Cascade with recompressor,Split-flow (no recompressor),Unit
+Recompression fraction x,0.22,0.0,0.0,-
+Branch fraction y,-,0.276,0.278,-
+Branch heater outlet temperature,-,347.617,347.288,C
+Compressor pressure ratio pr,3.896,3.896,3.896,-
+Maximum cycle pressure,30.0,30.0,29.999,MPa
+CO2 mass flow (turbine),49.546,55.545,55.546,kg/s
+Gas stack temperature,359.708,160.314,159.378,C
+Net power,5.603,7.065,7.065,MW
+Cycle thermal efficiency,42.4,37.721,37.671,%
+Heat recovery efficiency (net power / available heat),29.479,37.17,37.17,%
+System exergy efficiency (net power / gas exergy),48.544,61.209,61.209,%
+Exergy lost with the stack gas,3.032,0.632,0.625,MW
+HTR minimum temperature difference,21.507,10.0,10.0,K
+LTR minimum temperature difference,10.0,19.473,19.81,K
+Limiting constraint of the gas coupling,-,main heater pinch,main heater pinch,
