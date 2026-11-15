@@ -105,3 +105,74 @@ def couple_heater(res, gas, T_in, m_gas, dT_pinch=20.0, T_stack_min=423.15,
         "f": f, "T_gas": T_g, "T_co2": T_c, "dT": dT,
         "min_dT": float(dT.min()), "f_min": float(f[int(np.argmin(dT))]),
     }
+
+
+
+def couple_cascade(res, gas, T_in, m_gas, dT_pinch1=20.0, dT_pinch2=20.0,
+                   T_stack_min=423.15, n_seg=20, fluid="CO2"):
+    """Link the cascade cycle to the gas stream (gas passes the main heater
+    first, then the branch heater).
+
+    Finds the largest CO2 flow (turbine flow, kg/s) for which the minimum
+    gas-to-CO2 temperature difference is at least dT_pinch1 in the main heater
+    and dT_pinch2 in the branch heater, and the gas outlet is at least
+    T_stack_min. res: dictionary from recompression_cascade()."""
+    st = res["states"]
+    s2, s6, s7, sb = st[2], st[6], st[7], st[11]
+    q1, q2 = res["q_in"], res["q_b"]           # J per kg of turbine flow
+    f = np.linspace(0.0, 1.0, n_seg + 1)
+
+    # CO2 temperature profiles (independent of the CO2 flow)
+    p_c1 = s6["p"] + f * (s7["p"] - s6["p"])
+    h_c1 = s6["h"] + f * q1
+    T_c1 = np.array([PropsSI("T", "H", h, "P", p, fluid) for h, p in zip(h_c1, p_c1)])
+    p_c2 = s2["p"] + f * (sb["p"] - s2["p"])
+    h_c2 = s2["h"] + f * (sb["h"] - s2["h"])
+    T_c2 = np.array([PropsSI("T", "H", h, "P", p, fluid) for h, p in zip(h_c2, p_c2)])
+
+    h_in = float(gas.h(T_in))
+    h_stack = float(gas.h(T_stack_min))
+    m_max = m_gas * (h_in - h_stack) / (q1 + q2)     # limit from stack temperature
+
+    def check(m):
+        d1, d2 = m * q1 / m_gas, m * q2 / m_gas      # gas enthalpy drops, J/kg gas
+        hg1 = h_in - d1
+        hg2 = hg1 - d2
+        T_g1 = gas.T_of_h(hg1 + f * d1)
+        T_g2 = gas.T_of_h(hg2 + f * d2)
+        return float((T_g1 - T_c1).min()), float((T_g2 - T_c2).min()), hg1, hg2, T_g1, T_g2
+
+    def ok(m):
+        a, b = check(m)[:2]
+        return a >= dT_pinch1 and b >= dT_pinch2
+
+    if not ok(1e-6):
+        m = 0.0
+    elif ok(m_max):
+        m = m_max
+    else:
+        lo, hi = 1e-6, m_max
+        for _ in range(60):
+            mid = 0.5 * (lo + hi)
+            if ok(mid):
+                lo = mid
+            else:
+                hi = mid
+        m = lo
+
+    d1c, d2c, hg1, hg2, T_g1, T_g2 = check(m)
+    if m >= m_max * (1 - 1e-9):
+        binding = "stack temperature"
+    else:
+        binding = ("main heater pinch" if d1c - dT_pinch1 < d2c - dT_pinch2
+                   else "branch heater pinch")
+    T_out = float(gas.T_of_h(hg2))
+    return {
+        "m_co2": m, "Q1": m * q1, "Q2": m * q2, "Q": m * (q1 + q2),
+        "Q_max": m_gas * (h_in - h_stack),
+        "T_gas_mid": float(gas.T_of_h(hg1)), "T_out": T_out,
+        "ex_in": m_gas * float(gas.ex(T_in)),
+        "ex_out": m_gas * float(gas.ex(T_out)),
+        "min_dT1": d1c, "min_dT2": d2c, "binding": binding,
+        "f": f, "T_gas1": T_g1, "T_gas2": T_g2, "T_co2_1": T_c1, "T_co2_2": T_c2,
+    }

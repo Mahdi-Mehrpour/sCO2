@@ -1,0 +1,24 @@
+﻿Parameter,Baseline (1 heater),Cascade (2 heaters),Unit
+Recompression fraction x,0.342,0.045,-
+Branch fraction y,-,0.214,-
+Branch heater outlet temperature,-,424.004,C
+CO2 mass flow (turbine),59.863,69.553,kg/s
+"Heat to the cycle, main heater",11.773,10.792,MW
+"Heat to the cycle, branch heater",-,8.216,MW
+"Heat to the cycle, total",11.773,19.007,MW
+Gas temperature between the heaters,-,444.146,C
+Gas stack temperature,410.189,150.0,C
+Share of available heat used,61.938,100.0,%
+Net power,4.913,6.479,MW
+Cycle thermal efficiency (on heat delivered),41.731,34.088,%
+Heat recovery efficiency (net power / available heat),25.847,34.088,%
+Exergy of gas at inlet,11.542,11.542,MW
+System exergy efficiency (net power / gas exergy),42.563,56.133,%
+Exergy lost with the stack gas,3.82,0.548,MW
+"Total exergy destruction (heaters, cycle, cooler)",2.81,4.515,MW
+Main heater minimum temperature difference,20.0,20.018,K
+Branch heater minimum temperature difference,-,20.142,K
+HTR minimum temperature difference,26.841,13.048,K
+LTR minimum temperature difference,9.884,19.294,K
+Limiting constraint of the gas coupling,-,stack temperature,
+Cycle energy balance check,-,0.001,J/kg
