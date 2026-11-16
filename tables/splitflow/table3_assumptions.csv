@@ -15,11 +15,11 @@ Heat source,"Gas passes the main heater first, then the branch heater",,
 Fluid,"CO2 with real-gas properties (CoolProp, Helmholtz EOS)",CO2,
 Operating,Main compressor inlet temperature (state 1),32.0,C
 Operating,Main compressor inlet pressure (state 1),7.7,MPa
-Operating,"Compressor pressure ratio (optimised, at the pressure limit)",3.8959,-
-Operating,Maximum cycle pressure (design limit),30.0,MPa
+Operating,"Compressor pressure ratio (optimised, at the pressure limit)",3.2468,-
+Operating,Maximum cycle pressure (design limit),25.0,MPa
 Operating,Turbine inlet temperature (state 7),550.0,C
-Operating,"Branch fraction y (optimised, flat optimum)",0.2776,-
-Operating,"Branch heater outlet temperature (state 11, optimised, flat optimum)",347.29,C
+Operating,"Branch fraction y (optimised, flat optimum)",0.2533,-
+Operating,"Branch heater outlet temperature (state 11, optimised, flat optimum)",380.1,C
 Operating,No recompressor: x = 0 in the optimum of the cascade layout with recompression (800 C gas),,
 Components,Main compressor isentropic efficiency,0.85,-
 Components,Turbine isentropic efficiency,0.9,-
