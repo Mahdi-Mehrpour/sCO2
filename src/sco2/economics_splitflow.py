@@ -31,7 +31,7 @@ def build_inputs(P, econ_overrides=None):
     """P: dictionary from evaluate_plant(). Returns (CycleInputs, EconInputs)."""
     res, hs, par, cp = P["res"], P["hs"], P["par"], P["cooler"]
     st, y, m = res["states"], res["y"], hs["m_co2"]
-    ex = exergy_splitflow(res, hs, get_gas(), EAF["m_gas"])
+    ex = exergy_splitflow(res, hs, get_gas(), P["m_gas"])
     fe = ex["flow_exergy"]
     frac = {3: 1.0 - y, 11: y}                       # all other states: full flow
     states = {k: State(m=m * frac.get(k, 1.0), T=x["T"] - K, P=x["p"] / 1e6,
@@ -49,7 +49,7 @@ def build_inputs(P, econ_overrides=None):
     w = COOLING["wet_tower"]
     ci = CycleInputs(
         st=states, y=y,
-        T_g1=EAF["T_in"] - K, T_g2=hs["T_gas_mid"] - K, T_g3=hs["T_out"] - K,
+        T_g1=P["T_in"] - K, T_g2=hs["T_gas_mid"] - K, T_g3=hs["T_out"] - K,
         E_g1=hs["ex_in"] / 1e6, E_g2=ex["ex_mid_W"] / 1e6, E_g3=hs["ex_out"] / 1e6,
         W_fan_gas=par["fan_gas"] / 1e6,
         T_wb=w["T_wb_C"], tower_approach=w["tower_approach"],

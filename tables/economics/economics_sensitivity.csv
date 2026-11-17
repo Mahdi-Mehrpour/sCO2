@@ -1,9 +1,0 @@
-﻿Scenario,Capital (M$),Capital (USD/kWe),LCOE (USD/MWh),NPV (M$),IRR (%),Simple payback (yr)
-Base case,19.76,3189.32,50.14,15.05,13.38,6.59
-UA from end-point LMTD only,18.45,2976.48,47.57,16.35,14.64,6.13
-Heater cost doubled,22.25,3590.05,54.97,12.62,11.37,7.47
-"+30 % capital (ducts, heat buffer, engineering; placeholder)",25.69,4146.12,61.68,9.24,9.14,8.7
-Discount rate 8 %,19.76,3189.32,60.08,7.98,13.38,6.59
-Discount rate 10 %,19.76,3189.32,67.21,4.47,13.38,6.59
-Electricity value 0.06 USD/kWh,19.76,3189.32,50.14,4.97,7.98,9.43
-"Pessimistic: 8 %, 0.06 USD/kWh, +30 % capital",25.69,4146.12,74.72,-5.9,4.59,12.62

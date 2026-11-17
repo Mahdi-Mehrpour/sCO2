@@ -2,8 +2,8 @@
 cooling tower and parasitic loads. One function for the optimiser and the
 tables: evaluate_plant(y, T_b, pr).
 
-Gas condition is stable (EAF["T_in"], EAF["m_gas"]). Operating hours come
-from the calendar and the unit availability (no phase pattern)."""
+Gas condition is stable (EAF["T_in"], EAF["m_gas"]) unless T_in or m_gas are
+passed. Operating hours come from the calendar and the unit availability."""
 from .cycle_adv import splitflow_adv
 from .heat_source_adv import EAF, GasStream, couple_cascade
 from .parasitics_splitflow import PARASITIC, parasitic_loads
@@ -28,15 +28,17 @@ def operating_hours(op=OPERATION):
 
 
 def evaluate_plant(y, T_b, pr, check_pinch=True, option=COOLING_OPTION,
-                   drive=DRIVE):
-    """Full plant evaluation. Returns a dictionary with the cycle result (res),
-    gas coupling (hs), parasitic loads (par), cooler (cooler) and the net
-    electrical output."""
+                   drive=DRIVE, T_in=None, m_gas=None):
+    """Full plant evaluation. T_in (K) and m_gas (kg/s) override the EAF case.
+    Returns a dictionary with the cycle result (res), gas coupling (hs),
+    parasitic loads (par), cooler and the net electrical output."""
     gas = get_gas()
-    dTp, Tmin, mg = EAF["dT_pinch_heater"], EAF["T_stack_min"], EAF["m_gas"]
+    dTp, Tmin = EAF["dT_pinch_heater"], EAF["T_stack_min"]
+    T_in = EAF["T_in"] if T_in is None else T_in
+    mg = EAF["m_gas"] if m_gas is None else m_gas
     T1 = compressor_inlet_T(option)
     res = splitflow_adv(T1=T1, y=y, T_b=T_b, pr=pr, check_pinch=check_pinch)
-    hs = couple_cascade(res, gas, EAF["T_in"], mg, dTp, dTp, Tmin)
+    hs = couple_cascade(res, gas, T_in, mg, dTp, dTp, Tmin)
     par = parasitic_loads(res, hs, gas, mg, EAF["p"], dict(PARASITIC, drive=drive))
     cooler = cooler_performance(option, res, hs)
 
@@ -47,4 +49,4 @@ def evaluate_plant(y, T_b, pr, check_pinch=True, option=COOLING_OPTION,
     return {"res": res, "hs": hs, "par": par, "cooler": cooler,
             "net_el": net_el, "q_heat": q_heat, "eta_el": net_el / q_heat,
             "hours": hours, "energy_GWh": net_el / 1e6 * hours / 1e3,
-            "T1": T1}
+            "T1": T1, "T_in": T_in, "m_gas": mg}
