@@ -1,0 +1,17 @@
+﻿Component,Energy performance metric,Energy efficiency (%),Exergy efficiency (%),Exergy destruction (MW),Share of gas exergy (%),Share of total losses (%)
+Main heater,All gas heat goes to the CO2,100.0,90.22,0.7437,6.44,13.91
+Branch heater,All gas heat goes to the CO2,100.0,77.94,0.7479,6.48,13.99
+HTR,Effectiveness (enthalpy-based),90.0,95.93,0.1607,1.39,3.01
+LTR,Effectiveness (enthalpy-based),90.0,83.94,0.9121,7.9,17.06
+Mixer,Adiabatic mixing (energy balance),100.0,99.69,0.0678,0.59,1.27
+Turbine,Isentropic efficiency,90.0,95.39,0.4203,3.64,7.86
+Main compressor,Isentropic efficiency,85.0,86.9,0.2342,2.03,4.38
+Cooler,Heat rejected to the environment (exergy loss),n/a,n/a,0.8055,6.98,15.07
+Gearboxes,Efficiency of each gearbox,98.5,98.5,0.1576,1.37,2.95
+Generator,Efficiency,97.5,97.5,0.214,1.85,4.0
+Compressor motor,Efficiency,95.5,95.5,0.0855,0.74,1.6
+Cooling tower fan and pump,Fan and pump power (work counted as lost),n/a,n/a,0.121,1.05,2.26
+Off-gas fan,Fan power (work counted as lost),n/a,n/a,0.127,1.1,2.38
+Stack gas (exergy leaving with the exhaust),-,n/a,n/a,0.548,4.75,10.25
+Total destruction and losses (incl. stack),-,,,5.3454,46.31,100.0
+Net electrical power (product),-,,,6.1971,53.69,

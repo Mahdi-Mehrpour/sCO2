@@ -1,7 +1,0 @@
-﻿Gas inlet temperature (C),"Net power A, re-optimised (MW)","Net power B, fixed design (MW)",Power lost by fixed design (%),Optimal y (A),"Optimal T_b (A, C)",Optimal pr (A),CO2 flow A (kg/s),CO2 flow B (kg/s),Stack temperature A (C),Stack temperature B (C),Heat used A (% of available),Heat recovery efficiency A (%),System exergy efficiency A (%),System exergy efficiency B (%),HTR min dT A (K),LTR min dT A (K),Limiting constraint A,Limiting constraint B,Flags
-600,3.472,3.472,0.001,0.282,346.294,3.896,27.297,27.297,280.887,282.211,72.113,27.058,47.794,47.794,10.0,20.818,main heater pinch,main heater pinch,pr at limit
-700,5.25,5.25,0.0,0.282,346.294,3.896,41.277,41.278,219.873,221.901,88.07,33.045,56.255,56.255,10.0,20.818,main heater pinch,main heater pinch,pr at limit
-800,7.065,7.065,0.0,0.282,346.294,3.896,55.545,55.546,156.609,159.378,99.064,37.17,61.209,61.209,10.0,20.818,main heater pinch,main heater pinch,pr at limit
-900,8.512,8.355,1.839,0.243,326.248,3.896,66.92,65.69,150.0,150.0,100.0,38.377,61.358,60.229,14.664,15.224,stack temperature,stack temperature,pr at limit
-1000,9.85,9.569,2.859,0.192,338.463,3.896,77.442,75.23,150.0,150.0,100.0,38.779,60.402,58.675,18.006,12.727,stack temperature,stack temperature,pr at limit
-1100,11.189,10.799,3.489,0.173,319.829,3.896,87.967,84.9,150.0,150.0,100.0,39.032,59.399,57.327,19.998,11.201,stack temperature,stack temperature,pr at limit

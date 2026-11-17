@@ -1,0 +1,36 @@
+﻿Category,Assumption,Value,Unit
+Economics,Cost year index (CEPCI of the cost year),797.9,-
+Economics,"Installation and auxiliaries, fraction of purchased cost",0.3,-
+Economics,Discount rate,0.05,1/yr
+Economics,Economic life,20,yr
+Economics,Operating hours (calendar days x 24 h x availability),7128.0,h/yr
+Economics,"Value of the electricity (avoided purchase price, site assumption)",0.08,USD/kWh
+Economics,O&M cost,30.0,USD/kWe-yr
+Economics,Escalation of O&M and water price,0.03,1/yr
+Economics,Output degradation,0.01,1/yr
+Economics,"Salvage value, fraction of total capital investment",0.05,-
+Economics,Makeup water price (site assumption),1.0,USD/m3
+Economics,Cost of the waste-heat exergy (treated as free),0.0,USD/GJ
+Sizing,Heat exchanger UA used for cost,max (larger of end-point and segmented UA),
+Sizing,"Segmented UA: 30 segments for recuperators, 20 for heaters and cooler",,
+Sizing,Cost year,CEPCI 797.9 (2023),
+Sizing,Currency,USD (nominal values of the cost references; no conversion),
+Cost data,"Turbine: [W19] radial turbine, W_sh",band -32% / +51%,
+Cost data,Gearbox+generator: [W19] gearbox (W_T) + generator (W_e),band -19% / +23%,
+Cost data,Compressor+motor: [W19] IG compressor + synchronous motor,band -40% / +48%,
+Cost data,"HTR: [WDS16] 2500 $/(kW/K), end-point UA",band -30% / +30%,
+Cost data,"LTR: [WDS16] 2500 $/(kW/K), end-point UA",band -30% / +30%,
+Cost data,"Main heater: [WDS16] 5000 $/(kW/K), fin tube",band -20% / +100%,
+Cost data,"Branch heater: [WDS16] 5000 $/(kW/K), fin tube",band -20% / +100%,
+Cost data,"Cooler: [WDS16] 1700 $/(kW/K), shell & tube",band -30% / +30%,
+Cost data,"Cooling tower: [P19] modified Zanker (band ASSUMED, not in source)",band -30% / +30%,
+Cost data,"Gas heater cost band widened upward (dust, fouling, refractory); not validated for EAF gas",,
+Cost data,Cooling tower cost: modified Zanker formula reconstructed from the reference text; band assumed,,
+Cost data,Weiland correlations used inside or near their size ranges; any extrapolation is listed as a warning,,
+Not included,"Gas ducts, dust handling and filters, controls, grid connection, engineering and contingency",,
+Not included,Heat buffer (thermal storage) between the gas and the cycle,,
+Not included,Pressure effect on cost (the correlations have no pressure factor),,
+Not included,"Taxes, financing structure, incentives",,
+SPECO,Physical exergy is not split into thermal and mechanical parts,,
+SPECO,"Cooler and cooling tower are dissipative: their cost, tower power and water are charged to the product",,
+SPECO,O&M is shared in proportion to each component's purchased cost,,

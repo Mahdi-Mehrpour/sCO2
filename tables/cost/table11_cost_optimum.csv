@@ -1,5 +1,0 @@
-﻿n_p,pr,Max cycle pressure (MPa),y,T_b (C),Net power (MW),Gas stack temperature (C),Capital cost (M$),Specific cost (USD/kW),Revenue (M$/yr),Annualised capital (M$/yr),Net benefit (M$/yr),Simple payback (yr),Capital charge (USD/MWh),HTR min dT (K),LTR min dT (K),Max-power design: net power (MW),Max-power design: capital cost (M$),Max-power design: net benefit (M$/yr),Benefit gain vs max-power design (M$/yr),Variables at a bound
-0.0,4.497,34.628,0.331,312.579,7.056,150.004,6.309,894.067,3.387,0.757,2.63,1.863,17.881,10.0,25.22,7.065,6.513,2.61,0.02,
-0.3,3.977,30.622,0.296,339.307,7.067,150.0,7.094,1003.839,3.392,0.851,2.541,2.091,20.077,10.001,24.137,7.065,7.147,2.534,0.007,
-0.6,3.562,27.428,0.263,374.242,7.045,150.0,7.627,1082.708,3.381,0.915,2.466,2.256,21.654,10.0,19.447,7.065,7.862,2.448,0.018,
-1.0,3.175,24.445,0.253,378.091,6.863,150.0,7.554,1100.647,3.294,0.907,2.388,2.293,22.013,12.121,18.763,7.065,8.962,2.316,0.072,
