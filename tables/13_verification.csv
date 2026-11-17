@@ -1,0 +1,46 @@
+﻿No,Category,Check,Value,Criterion,Result
+1,Properties,"State temperatures recomputed from (h, p), worst case (K)",1.7053e-13,|value| < 0.0001 K,PASS
+2,Properties,"State entropies recomputed from (T, p), worst case (J/kg.K)",0.0,|value| < 0.01 J/kg.K,PASS
+3,Properties,CO2 critical constants (CoolProp),304.128,critical point 304.128 K and 7.3773 MPa (value shown: Tcrit in K),PASS
+4,Properties,Compressor inlet temperature above critical (K),1.0218,compressor inlet above the critical point (pressure margin 0.32 MPa); a small margin is a design risk,PASS
+5,Balances,"Cycle energy balance, q_in + q_b - w_net - q_out (J/kg)",0.000987094,|value| < 0.01 J/kg,PASS
+6,Balances,Mixer energy balance (J/kg),0.0,|value| < 0.01 J/kg,PASS
+7,Balances,HTR hot-side duty minus cold-side duty (J/kg),0.000987094,|value| < 0.01 J/kg,PASS
+8,Balances,LTR hot-side duty minus cold-side duty (J/kg),-5.82077e-11,|value| < 0.01 J/kg,PASS
+9,Balances,Heat from the gas minus heat to the CO2 (relative),0.0,gas heat equals heat to the CO2 (relative) < 1e-4,PASS
+10,Balances,System exergy balance (W),-1.86265e-09,|value| < 10 W,PASS
+11,Balances,"Power balance, shaft power - losses - fans - net electrical (W)",0.0,|value| < 1 W,PASS
+12,Second law,Smallest entropy generation of any component (W/K),227.523,entropy generation >= 0 in all 7 components (smallest: Mixer; value in W/K),PASS
+13,Second law,Cycle efficiency below Carnot between T1 and T7,0.363139,< Carnot 0.629,PASS
+14,Second law,"Net electrical power / available heat below Carnot (gas inlet, dead state)",0.326038,< Carnot 0.722,PASS
+15,Second law,System exergy efficiency between 0 and 1,0.536894,0 < value < 1,PASS
+16,Definitions,Compressor isentropic efficiency minus input,-7.77156e-16,|value| < 1e-06,PASS
+17,Definitions,Turbine isentropic efficiency minus input,3.33067e-16,|value| < 1e-06,PASS
+18,Definitions,HTR effectiveness minus input,5.83664e-09,|value| < 1e-06,PASS
+19,Definitions,LTR effectiveness minus input,-1.11022e-16,|value| < 1e-06,PASS
+20,Definitions,"Segmented recuperator profiles meet the cycle states, worst end point (K)",7.91914e-07,|value| < 0.001 K,PASS
+21,Limiting cases,Ideal machines: entropy change across compressor and turbine (J/kg.K),1.60776e-09,|value| < 0.001 J/kg.K,PASS
+22,Limiting cases,Zero pressure drops: spread of pressures within each level (Pa),0.0,|value| < 0.001 Pa,PASS
+23,Limiting cases,HTR effectiveness 1: one stream reaches the other's inlet T (K),7.51087e-07,|value| < 0.001 K,PASS
+24,Limiting cases,LTR effectiveness 1: one stream reaches the other's inlet T (K),0.0,|value| < 0.001 K,PASS
+25,Numerical,"Recuperator UA, relative change with 120 segments",0.000178644,UA changes by < 1 % (30 to 120 segments),PASS
+26,Numerical,"Recuperator minimum temperature difference, change with 120 segments (K)",0.0,minimum temperature difference changes by < 0.5 K,PASS
+27,Numerical,"CO2 flow, relative change with 80 heater segments",0.0,CO2 flow changes by < 0.5 % (20 to 80 heater segments),PASS
+28,Numerical,"Cooler UA, relative change with 120 segments",0.000933909,cooler UA changes by < 1 % (30 to 120 segments),PASS
+29,Numerical,"CO2 flow, relative change with a 5 times finer gas table",-1.85035e-08,CO2 flow changes by < 0.1 % (600 to 3000 gas table points),PASS
+30,Gas model,Mole fractions add up to 1,0.0,|value| < 1e-09,PASS
+31,Gas model,"Mixture molar mass, Cantera minus CoolProp (kg/kmol)",0.0001578,molar mass 29.2920 kg/kmol equals the CoolProp value 29.2919 (< 0.01),PASS
+32,Gas model,"N2 enthalpy change, Cantera / CoolProp - 1",5.41641e-05,enthalpy change 400 to 1073 K within 1 % of CoolProp,PASS
+33,Gas model,"CO2 enthalpy change, Cantera / CoolProp - 1",-0.000720146,enthalpy change 400 to 1073 K within 1 % of CoolProp,PASS
+34,Gas model,"H2O enthalpy change, Cantera / CoolProp - 1",-0.00594534,enthalpy change 400 to 1073 K within 1 % of CoolProp,PASS
+35,Gas model,"O2 enthalpy change, Cantera / CoolProp - 1",-0.000251664,enthalpy change 400 to 1073 K within 1 % of CoolProp,PASS
+36,Gas model,"CO enthalpy change, Cantera / CoolProp - 1",0.000468875,enthalpy change 400 to 480 K within 1 % of CoolProp,PASS
+37,Economics,NPV evaluated at the IRR (USD),7.45058e-09,|value| < 10 USD,PASS
+38,Economics,SPECO cost balance residual (USD/h),0.0,|value| < 1e-06 USD/h,PASS
+39,Economics,Total capital investment minus purchased cost x (1 + installation) (USD),0.0,|value| < 1 USD,PASS
+40,Economics,Net power of the economic module minus the plant model (MW),8.88178e-15,|value| < 1e-06 MW,PASS
+41,Economics,NPV of the fast path minus the full path (USD),0.0,|value| < 1 USD,PASS
+42,Reproducibility,"Net electrical power, difference between two runs (W)",0.0,|value| < 1e-09 W,PASS
+43,Reproducibility,"Net electrical power, table 04 minus the model (MW)",2.69607e-05,|value| < 0.001 MW,PASS
+44,Trends,Net power with half the gas flow / design - 0.5,0.0,net power is proportional to the gas flow (< 1e-6),PASS
+45,Trends,"Net power at 800 C / design - 1, with 700 and 900 C ordering",0.0,net power rises with gas temperature (700 < 800 < 900 C); the 800 C value equals the design,PASS

@@ -1,0 +1,12 @@
+﻿Quantity,Mean,P5,P10,P50,P90,P95,Min,Max
+Net electrical power (MW),5.58,3.361,3.648,5.32,7.977,8.474,2.229,9.794
+"NPV, modelled inputs only (M$)",0.13,-13.306,-10.37,-1.332,12.781,16.512,-23.127,31.781
+"NPV, incl. unmodelled capital (M$)",-5.278,-19.618,-16.943,-5.944,8.166,11.515,-34.684,27.634
+"LCOE, modelled inputs only (USD/MWh)",88.507,64.119,68.139,85.388,113.763,120.211,50.946,152.33
+Total capital investment (M$),21.897,13.732,15.019,21.109,29.587,31.919,11.592,41.419
+
+Share,Percent
+"Samples with NPV < 0, modelled inputs only",55.7
+"Samples with NPV < 0, incl. unmodelled capital",69.7
+Samples where HTR or LTR minimum dT < 10 K (design constraint broken),41.7
+Infeasible samples (excluded above),0.0

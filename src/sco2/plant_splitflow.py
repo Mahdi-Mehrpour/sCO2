@@ -28,7 +28,7 @@ def operating_hours(op=OPERATION):
 
 
 def evaluate_plant(y, T_b, pr, check_pinch=True, option=COOLING_OPTION,
-                   drive=DRIVE, T_in=None, m_gas=None):
+                   drive=DRIVE, T_in=None, m_gas=None, **cycle_kw):
     """Full plant evaluation. T_in (K) and m_gas (kg/s) override the EAF case.
     Returns a dictionary with the cycle result (res), gas coupling (hs),
     parasitic loads (par), cooler and the net electrical output."""
@@ -37,7 +37,8 @@ def evaluate_plant(y, T_b, pr, check_pinch=True, option=COOLING_OPTION,
     T_in = EAF["T_in"] if T_in is None else T_in
     mg = EAF["m_gas"] if m_gas is None else m_gas
     T1 = compressor_inlet_T(option)
-    res = splitflow_adv(T1=T1, y=y, T_b=T_b, pr=pr, check_pinch=check_pinch)
+    res = splitflow_adv(T1=T1, y=y, T_b=T_b, pr=pr, check_pinch=check_pinch,
+                        **cycle_kw)
     hs = couple_cascade(res, gas, T_in, mg, dTp, dTp, Tmin)
     par = parasitic_loads(res, hs, gas, mg, EAF["p"], dict(PARASITIC, drive=drive))
     cooler = cooler_performance(option, res, hs)
