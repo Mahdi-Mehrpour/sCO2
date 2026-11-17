@@ -6,14 +6,15 @@ import pandas as pd
 from sco2.plant_splitflow import evaluate_plant
 from sco2.economics_eaf import run, report, CEPCI
 from sco2.economics_splitflow import build_inputs, fast_economics
+from sco2.settings_splitflow import ECON_BASE
 
-OUT = Path("tables/economics")
+OUT = Path("tables")
 OUT.mkdir(parents=True, exist_ok=True)
 
 with open("data/results/splitflow_optimum.json") as f:
     opt = json.load(f)
 P = evaluate_plant(opt["y"], opt["T_b"], opt["pr"])
-ci, e = build_inputs(P)
+ci, e = build_inputs(P, ECON_BASE)
 R = run(ci, e)
 d, rows, ec, sp = R["size"], R["costs"]["rows"], R["econ"], R["speco"]
 W_kWe = d["W_net"] * 1e3
@@ -92,11 +93,11 @@ t_sens = pd.DataFrame([
     scen("UA from end-point LMTD only", replace(ci, ua_basis="endpoint")),
     scen("Heater cost doubled", extra=extra_heater),
     scen("+30 % capital (ducts, heat buffer, engineering; placeholder)", extra=0.30),
-    scen("Discount rate 8 %", e_=replace(e, r=0.08)),
+    scen("Discount rate 5 %", e_=replace(e, r=0.05)),
     scen("Discount rate 10 %", e_=replace(e, r=0.10)),
     scen("Electricity value 0.06 USD/kWh", e_=replace(e, c_e=0.06)),
-    scen("Pessimistic: 8 %, 0.06 USD/kWh, +30 % capital",
-         e_=replace(e, r=0.08, c_e=0.06), extra=0.30),
+    scen("Pessimistic: 10 %, 0.06 USD/kWh, +30 % capital",
+         e_=replace(e, r=0.10, c_e=0.06), extra=0.30),
 ]).round(2)
 
 rates, prices = [0.05, 0.08, 0.10], [0.06, 0.08, 0.10]
@@ -147,10 +148,12 @@ A += [{"Category": "SPECO", "Assumption": t, "Value": "", "Unit": ""} for t in [
 t_ass = pd.DataFrame(A)
 
 # ---------------- save and print -------------------------------------------
+NUM = {"costs": "06", "indicators": "07", "sensitivity": "08",
+       "npv_grid": "09", "speco": "10", "sizes": "11"}
 tables = {"sizes": t_size, "costs": t_cost, "indicators": t_ind, "speco": t_speco,
-          "sensitivity": t_sens, "npv_grid": t_grid, "assumptions": t_ass}
+          "sensitivity": t_sens, "npv_grid": t_grid}
 for name, df in tables.items():
-    df.to_csv(OUT / f"economics_{name}.csv", encoding="utf-8-sig",
+    df.to_csv(OUT / f"{NUM[name]}_economics_{name}.csv", encoding="utf-8-sig",
               index=name == "npv_grid")
 (OUT / "economics_report.md").write_text(report(R), encoding="utf-8")
 

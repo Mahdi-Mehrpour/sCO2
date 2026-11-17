@@ -1,0 +1,38 @@
+﻿Parameter,Value,Unit
+Gas inlet temperature,800.0,C
+Gas mass flow,25.0,kg/s
+Gas stack temperature,150.0,C
+Heat available down to the minimum stack temperature,19.0072,MW
+Heat delivered to the cycle,19.0072,MW
+CO2 mass flow (turbine),60.6866,kg/s
+Compressor inlet temperature (set by the wet tower),32.0,C
+Compressor pressure ratio,3.2468,-
+Maximum cycle pressure,25.0,MPa
+Turbine shaft power,8.6903,MW
+Compressor shaft power,1.7881,MW
+Net shaft power (cycle model),6.9023,MW
+Gearbox losses,0.1576,MW
+Generator losses,0.214,MW
+Compressor motor losses,0.0855,MW
+Cooling tower fan and pump,0.121,MW
+Off-gas fan,0.127,MW
+Total parasitic loads and losses,0.7052,MW
+Net electrical power,6.1971,MW
+Cycle thermal efficiency (net shaft power / heat delivered),36.3139,%
+Net electrical efficiency (net electrical power / heat delivered),32.6038,%
+Heat recovery efficiency (net electrical power / available heat),32.6038,%
+Exergy of gas at inlet,11.5425,MW
+System exergy efficiency (net electrical power / gas exergy),53.6894,%
+Cooler duty,12.1049,MW
+Cooler UA,847.1867,kW/K
+Cooler minimum temperature difference,9.3022,K
+Makeup water,6.7082,kg/s
+Main heater minimum temperature difference,20.0,K
+Branch heater minimum temperature difference,37.3158,K
+HTR minimum temperature difference,11.703,K
+LTR minimum temperature difference,18.9037,K
+Limiting constraint of the gas coupling,main heater pinch,
+Operating hours (equivalent full load),7128.0,h/yr
+Annual net electrical energy,44.1727,GWh/yr
+Annual makeup water,172.1367,thousand m3/yr
+Closure check of the power balance,0.0,MW

@@ -60,10 +60,10 @@ df = df.fillna("-")
 print(df.to_string(float_format=lambda v: f"{v:.3f}"))
 print(f"\nT1 floor: {COOLING['T1_floor_C']} C (critical temperature + 1 K)")
 
-Path("tables/splitflow").mkdir(parents=True, exist_ok=True)
-df.to_csv("tables/splitflow/table7_cooling_options.csv", encoding="utf-8-sig")
+Path("tables").mkdir(parents=True, exist_ok=True)
+df.to_csv("tables/05_cooling_options.csv", encoding="utf-8-sig")
 
-Path("figures/splitflow").mkdir(parents=True, exist_ok=True)
+Path("figures").mkdir(parents=True, exist_ok=True)
 fig, axes = plt.subplots(1, 3, figsize=(16, 4.8), sharey=True)
 for ax, (label, cp) in zip(axes, profiles.items()):
     ax.plot(cp["Q_axis"] / 1e6, cp["T_co2"] - K, "r-", label="CO2")
@@ -74,6 +74,6 @@ for ax, (label, cp) in zip(axes, profiles.items()):
     ax.legend()
 axes[0].set_ylabel("Temperature (°C)")
 fig.tight_layout()
-fig.savefig("figures/splitflow/cooler_QT.png", dpi=150)
-print("Table saved: tables/splitflow/table7_cooling_options.csv")
-print("Figure saved: figures/splitflow/cooler_QT.png")
+fig.savefig("figures/cooler_QT.png", dpi=150)
+print("Table saved: tables/05_cooling_options.csv")
+print("Figure saved: figures/cooler_QT.png")

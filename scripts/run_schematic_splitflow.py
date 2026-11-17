@@ -22,7 +22,7 @@ hs = couple_cascade(res, gas, EAF["T_in"], EAF["m_gas"],
                     EAF["dT_pinch_heater"], EAF["dT_pinch_heater"],
                     EAF["T_stack_min"])
 
-out = Path("figures/splitflow")
+out = Path("figures")
 out.mkdir(parents=True, exist_ok=True)
 fig, ax = draw_schematic_splitflow(res, hs, EAF)
 for ext in ("png", "svg", "pdf"):

@@ -1,0 +1,93 @@
+﻿Category,Assumption,Value,Unit,Note
+General,"Steady-state, steady-flow operation; no dynamics",,,model scope
+General,Kinetic and potential energy changes are neglected,,,model scope
+General,Cycle quantities are per 1 kg of CO2 through the turbine; absolute values use the CO2 flow from the heat-source coupling,,,model scope
+General,All cycle components are adiabatic; no leakage,,,model scope
+Heat source,"Heater in the primary off-gas line after post-combustion (hot-duct position), upstream of water-cooled duct and evaporative cooling; stable gas condition",,,design choice
+Heat source,Gas inlet temperature,800.0,C,placeholder
+Heat source,Gas mass flow,25.0,kg/s,placeholder
+Heat source,Gas pressure (no pressure drop in the thermodynamic model),101.325,kPa,placeholder
+Heat source,Gas composition (mole fractions),"N2 0.68, CO2 0.12, H2O 0.1, O2 0.09, CO 0.01",,placeholder
+Heat source,"Ideal-gas mixture, NASA polynomials (Cantera gri30); dust and chemical exergy of CO neglected",,,model
+Heat source,Minimum gas outlet (stack) temperature,150.0,C,placeholder
+Heat source,Minimum gas-to-CO2 temperature difference in each heater,20.0,K,placeholder
+Heat source,"Gas passes the main heater first, then the branch heater",,,design choice
+Fluid,"CO2 with real-gas properties (CoolProp, Helmholtz EOS)",CO2,,model
+Cycle,Layout: split-flow without recompressor; branch taken after the main compressor and rejoining at the mixer,,,design choice
+Cycle,"Compressor inlet temperature (set by the wet tower, at the floor of critical temperature + 1 K)",32.0,C,design choice
+Cycle,Compressor inlet pressure (fixed),7.7,MPa,design choice
+Cycle,Compressor pressure ratio,3.2468,-,"optimised, at the pressure limit"
+Cycle,Turbine inlet temperature (fixed),550.0,C,design choice
+Cycle,Branch fraction y,0.2533,-,optimised (flat optimum)
+Cycle,Branch heater outlet temperature,380.1004,C,optimised (flat optimum)
+Cycle,Main compressor isentropic efficiency,0.85,-,placeholder
+Cycle,Turbine isentropic efficiency,0.9,-,placeholder
+Cycle,"LTR and HTR effectiveness (enthalpy-based, at inlet pressures)",0.9,-,placeholder
+Cycle,Minimum temperature difference in HTR and LTR enforced in the optimisation,10.0,K,design choice
+Cycle,Branch heater pressure drop equals the LTR cold side drop (no throttling at the mixer),,,design choice
+Pressure drops,Main heater (fraction of inlet pressure),2.0,%,placeholder
+Pressure drops,Cooler (fraction of inlet pressure),1.0,%,placeholder
+Pressure drops,LTR cold side (fraction of inlet pressure),1.0,%,placeholder
+Pressure drops,LTR hot side (fraction of inlet pressure),1.0,%,placeholder
+Pressure drops,HTR cold side (fraction of inlet pressure),1.0,%,placeholder
+Pressure drops,HTR hot side (fraction of inlet pressure),1.0,%,placeholder
+Cooling,Cooling system: Water loop with wet cooling tower,,,design choice
+Cooling,Design wet-bulb temperature,18.0,C,placeholder
+Cooling,Tower approach (cooling water minus wet bulb),4.0,K,placeholder
+Cooling,Heat exchanger approach (CO2 outlet minus cooling water inlet),5.0,K,placeholder
+Cooling,Cooling water temperature rise,8.0,K,placeholder
+Cooling,Tower fan and pump power as a fraction of the cooler duty,1.0,%,placeholder
+Cooling,Makeup water factor (makeup / evaporation),1.33,-,placeholder
+Cooling,Lowest compressor inlet temperature allowed (critical temperature + 1 K),32.0,C,design choice
+Parasitics,Compressor driven by an electric motor,motor,,design choice
+Parasitics,Gearbox efficiency,0.985,-,placeholder
+Parasitics,Generator efficiency,0.975,-,placeholder
+Parasitics,Compressor motor efficiency,0.955,-,placeholder
+Parasitics,Gas-side pressure drop for the off-gas fan (heaters and ducts),3000.0,Pa,placeholder
+Parasitics,Off-gas fan efficiency,0.7,-,placeholder
+Operation,Furnace operating days per year,330.0,days,placeholder
+Operation,Furnace operating hours per day,24.0,h,placeholder
+Operation,Availability of the sCO2 unit,0.9,-,placeholder
+Operation,Stable gas condition all year; the fluctuation phases are not used,,,design choice
+Limits,"Maximum cycle pressure (250 bar, at the compressor outlet)",25.0,MPa,"supplied list, not verified; hard; STEP turbine operates at 250 bar; enforced: pressure ratio is capped; model value 25.0 MPa, margin +0.0 MPa"
+Limits,Design pressure relative to operating pressure,1.1,-,"supplied list, not verified; info; STEP: 280 bar design for 250 bar operation; a precedent, not a code rule; not used in the calculation"
+Limits,Turbine inlet temperature,700.0,C,"supplied list, not verified; validity; upper end of the radial turbine cost data (Weiland et al.); turbine inlet is fixed at 550 C; model value 550.0 C, margin +150.0 C"
+Limits,"HTR hot inlet temperature (state 8), base case",550.0,C,"supplied list, not verified; hard; 316 stainless steel, conservative value; reported; not yet a constraint in the optimisation; model value 418.7 C, margin +131.3 C"
+Limits,"HTR hot inlet temperature (state 8), sensitivity case",600.0,C,"supplied list, not verified; sensitivity; STEP HTR hot inlet in 316 stainless steel; reported only; model value 418.7 C, margin +181.3 C"
+Limits,Recuperator precedent,575 C / 280 bar,,"supplied list, not verified; info; Thar Energy recuperator, ASME Sec. VIII Div. 1; not used in the calculation"
+Limits,Heater material above 700 C,Ni alloy (740H or 617),,"supplied list, not verified; info; STEP heater; the CO2 side stays at 550 C in this model; not used in the calculation"
+Economics,Cost year index (CEPCI of the cost year),797.9,-,reference
+Economics,"Installation and auxiliaries, fraction of purchased cost",0.3,-,reference
+Economics,Discount rate,0.08,1/yr,"base case, chosen"
+Economics,Economic life,20,yr,"base case, chosen"
+Economics,Operating hours (calendar days x 24 h x availability),7128.0,h/yr,placeholder
+Economics,Value of the electricity (avoided purchase price),0.08,USD/kWh,placeholder: replace with the site value
+Economics,O&M cost,30.0,USD/kWe-yr,reference
+Economics,Escalation of O&M and water price,0.03,1/yr,reference
+Economics,Output degradation,0.01,1/yr,reference
+Economics,"Salvage value, fraction of total capital investment",0.05,-,reference
+Economics,Makeup water price,1.0,USD/m3,placeholder
+Economics,Cost of the waste-heat exergy (treated as free),0.0,USD/GJ,design choice
+Economics,Heat exchanger UA used for cost: larger of end-point and segmented UA,,,design choice
+Economics,"Currency: USD, nominal values of the cost references, no conversion",,,design choice
+Cost data,"Turbine: [W19] radial turbine, W_sh",-32% / +51%,band,reference
+Cost data,Gearbox+generator: [W19] gearbox (W_T) + generator (W_e),-19% / +23%,band,reference
+Cost data,Compressor+motor: [W19] IG compressor + synchronous motor,-40% / +48%,band,reference
+Cost data,"HTR: [WDS16] 2500 $/(kW/K), end-point UA",-30% / +30%,band,reference
+Cost data,"LTR: [WDS16] 2500 $/(kW/K), end-point UA",-30% / +30%,band,reference
+Cost data,"Main heater: [WDS16] 5000 $/(kW/K), fin tube",-20% / +100%,band,"band widened upward (dust, fouling); not validated for EAF gas"
+Cost data,"Branch heater: [WDS16] 5000 $/(kW/K), fin tube",-20% / +100%,band,"band widened upward (dust, fouling); not validated for EAF gas"
+Cost data,"Cooler: [WDS16] 1700 $/(kW/K), shell & tube",-30% / +30%,band,reference
+Cost data,"Cooling tower: [P19] modified Zanker (band ASSUMED, not in source)",-30% / +30%,band,formula reconstructed from the reference text; band assumed
+Not included,"Gas ducts, dust handling and filters, controls, grid connection, engineering and contingency (costs)",,,not modelled
+Not included,Heat buffer (thermal storage) between the gas and the cycle (cost and dynamics),,,not modelled
+Not included,Pressure effect on equipment cost (the correlations have no pressure factor),,,not modelled
+Not included,"Taxes, financing structure and incentives",,,not modelled
+Not included,Changes of gas composition; dust and fouling on the gas side,,,not modelled
+Not included,Dynamic behaviour and off-design operation of turbomachinery and heat exchangers,,,not modelled
+Not included,"Mechanical design of the heaters (wall temperature, tube material)",,,not modelled
+SPECO,Physical exergy is not split into thermal and mechanical parts,,,simplification
+SPECO,"Cooler and cooling tower are dissipative: their cost, tower power and water are charged to the product",,,simplification
+SPECO,O&M is shared in proportion to each component's purchased cost,,,simplification
+Numerics,Convergence tolerance on h of state 5 (recuperator loop),0.001,J/kg,model
+Numerics,Recuperator pinch check with 30 segments; heaters and cooler with 20 to 30 segments; pressure linear along each side,,,model
