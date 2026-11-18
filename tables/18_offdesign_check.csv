@@ -1,0 +1,9 @@
+﻿Quantity,Design model,Off-design model,Difference (%),Result
+Net electrical power (MW),6.1971,6.1971,0.0,PASS
+Turbine inlet temperature (C),550.0,550.0,0.0,PASS
+Maximum pressure (MPa),25.0,25.0,0.0,PASS
+Branch heater outlet temperature (C),380.1004,380.1004,0.0,PASS
+Gas stack temperature (C),150.0,150.0,0.0,PASS
+Main heater duty (MW),11.5646,11.5646,0.0,PASS
+Branch heater duty (MW),7.4426,7.4426,0.0,PASS
+Net shaft power (MW),6.9023,6.9023,0.0,PASS
