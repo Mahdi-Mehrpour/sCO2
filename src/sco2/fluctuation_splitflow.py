@@ -204,16 +204,12 @@ def summarise(pm, prof, sim, hw, label=""):
 # ---------------------------------------------------------------------------
 def make_figures(results, hw, path_series, path_summary, show_labels=None):
     """results: list of (label, prof, sim, summary). show_labels: scenarios
-    drawn in the time-series figure (default: the three amplitude cases)."""
+    drawn in the time-series figure (default: the first three)."""
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
 
-    if show_labels is None:
-        show_labels = ("Weak (amp 1)", "Amp 3", "Amp 3 + gap")
-    show = [r for r in results if r[0] in show_labels]
-    if not show:
-        show = results[:3]
+    show = [r for r in results if show_labels and r[0] in show_labels] or results[:3]
     fig, axes = plt.subplots(3, len(show), figsize=(5.2 * len(show), 9),
                              sharex=True, squeeze=False)
     for c, (label, prof, sim, _) in enumerate(show):
