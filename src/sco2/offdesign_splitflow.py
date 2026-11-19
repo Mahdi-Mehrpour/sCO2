@@ -1,6 +1,6 @@
 """Off-design model of the split-flow plant: fixed hardware, variable gas.
 
-The hardware is frozen at the design point (EAF gas 800 C, 25 kg/s):
+The hardware is frozen at the design point (the design gas of heat_source_adv.EAF):
   - UA of the five heat exchangers (HTR, LTR, main heater, branch heater),
     calibrated from the design states with the same segmented method used here
   - turbine swallowing capacity (ellipse law, nozzle area fixed)

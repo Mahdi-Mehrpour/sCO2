@@ -43,7 +43,7 @@ EAF_REF_F = [
 
 def make_profile_ref(m_mean=25.0, mean_C=None, flow="data", dt_min=0.5):
     """Reference-cycle profile (40 min). The flow is the measured SHAPE scaled
-    to a time mean of m_mean (the real flow is about 2x our 25 kg/s, so only
+    to a time mean of m_mean (the measured flow is digitised in 1e5 Nm3/h, so only
     the relative shape is used). flow = 'data' (measured shape) or 'const'.
     mean_C: shift the temperature curve to this time mean (None = as measured).
     The cycle is not exactly periodic (ends at 400 C, starts at 350 C)."""

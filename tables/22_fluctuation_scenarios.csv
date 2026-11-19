@@ -1,7 +1,0 @@
-﻿Scenario,Mean gas temperature (C),Mean gas flow (kg/s),Gas temperature min / max (C),Gas flow min / max (kg/s),Mean net electrical power (MW),Peak net electrical power (MW),Energy per cycle (MWh),Annual energy (GWh/yr),Steady equivalent at the mean gas (MW),Fluctuation penalty vs steady equivalent (%),Mean power / design steady power (%),"Heat available, mean (MW)","Heat used, mean (MW)",Heat used (% of available),Time running (%),Time idle (%),Time in restart (%),Mean gas bypass while running (kg/s),CO2 flow range while running (% of design),T7 range while running (C),Points clipped to the map edge
-Steady design gas,800.0,25.0,800 / 800,25.0 / 25.0,6.197,6.197,6.197,44.173,6.197,0.0,100.0,19.007,19.007,100.0,100.0,0.0,0.0,0.0,100 - 100,550 - 550,0
-Weak (amp 1),800.0,25.0,720 / 880,21.3 / 28.7,5.364,6.183,5.364,38.232,6.197,13.448,86.552,19.284,16.852,87.388,100.0,0.0,0.0,2.806,84 - 100,512 - 550,0
-Amp 2,800.0,25.0,640 / 960,17.5 / 32.5,4.667,6.169,4.667,33.264,6.197,24.697,75.303,20.102,15.027,74.752,100.0,0.0,0.0,5.339,68 - 100,472 - 550,0
-Amp 3,800.0,25.0,560 / 1040,13.8 / 36.2,4.107,6.155,4.107,29.273,6.197,33.731,66.269,21.462,13.514,62.97,100.0,0.0,0.0,7.643,53 - 100,429 - 550,0
-Weak + gap,746.972,24.124,200 / 880,12.5 / 28.7,4.647,6.183,4.647,33.121,5.24,11.324,74.981,17.855,14.775,82.75,86.667,9.167,4.167,3.237,52 - 100,376 - 550,0
-Amp 3 + gap,760.917,24.873,200 / 1040,12.5 / 36.2,3.748,6.155,3.748,26.717,5.618,33.289,60.483,20.826,12.388,59.482,85.833,10.0,4.167,8.904,45 - 100,379 - 550,0

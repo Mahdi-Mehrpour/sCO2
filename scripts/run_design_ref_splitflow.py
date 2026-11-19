@@ -2,14 +2,15 @@
 reference cycle (Dal Magro 2017, Fig. 3.40).
 
 OBJECTIVE: net ELECTRICAL power of the plant (after fans, pumps, losses), not the
-cycle shaft power used for the 800 C design. The previous optimum file is kept
-as splitflow_optimum_ref_cycleobj.json.
+cycle shaft power. The previous optimum file is kept as
+splitflow_optimum_ref_cycleobj.json.
 
 Design gas: mean temperature of the digitised cycle and the mean flow of the
 figure (1.34e5 Nm3/h), converted to kg/s with an ASSUMED normal density.
-Same variables, bounds, penalty and pressure limit as run_splitflow_opt_adv.py.
-Result is saved to data/results/splitflow_optimum_ref.json (the 800 C optimum
-in splitflow_optimum.json is NOT touched).
+Variables: y, T_b, pressure ratio; pressure limit 25 MPa; HTR/LTR pinch penalty.
+Result is saved to data/results/splitflow_optimum_ref.json. The file
+splitflow_optimum.json (start values and the design read by the other scripts)
+is NOT touched.
 
 Run: python scripts/run_design_ref_splitflow.py"""
 import json
@@ -92,7 +93,6 @@ print(f"Net electrical {Pl['net_el'] / 1e6:.3f} MW | cycle efficiency "
       f"{Pl['res']['eta'] * 100:.1f} % | heat available {hs['Q_max'] / 1e6:.2f} MW | "
       f"heat recovery {Pl['net_el'] / hs['Q_max'] * 100:.1f} % | exergy efficiency "
       f"{Pl['net_el'] / hs['ex_in'] * 100:.1f} %")
-print(f"Reference: the 800 C / 25 kg/s design gives 6.197 MW")
 
 Path("data/results").mkdir(parents=True, exist_ok=True)
 bak = Path("data/results/splitflow_optimum_ref_cycleobj.json")
