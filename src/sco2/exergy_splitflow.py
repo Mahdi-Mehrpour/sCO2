@@ -2,15 +2,28 @@
 
 Inputs: results of splitflow_adv() and couple_cascade(). SI units.
 Cycle quantities are per kg of turbine flow; absolute values (W) use the
-CO2 flow m = hs["m_co2"]. Only physical exergy is considered.
+CO2 flow m = hs["m_co2"]. The balances use the PHYSICAL exergy of the gas and
+the CO2; the chemical exergy of the CO in the off-gas is reported separately
+(it is not recoverable in this plant, the CO is not burned).
 
 exergy_splitflow(): cycle components, heaters and stack, on a net shaft
 power basis.
 exergy_plant(): adds the parasitic losses (gearboxes, generator, motor,
 fans), so the balance closes on net electrical power:
   gas exergy in = net electrical power + all destruction + cooler loss
-                  + parasitic losses + exergy leaving with the stack gas."""
+                  + parasitic losses + exergy leaving with the stack gas.
+
+Three exergy efficiencies of the plant are returned:
+  eta_system        = net electrical / physical exergy of the gas in
+                      (proportional to net power for a given gas)
+  eta_fuel_product  = net electrical / (gas exergy in - stack exergy), i.e. the
+                      exergy actually taken from the gas
+  eta_total         = net electrical / (physical + chemical exergy of the CO)"""
+import numpy as np
 from CoolProp.CoolProp import PropsSI
+
+R_UNIVERSAL = 8.314462618      # J/(mol K)
+EX_CH_CO = 275.1e3             # J/mol, standard chemical exergy of CO (Szargut)
 
 
 def flow_exergy(fluid, state, T0, p0):
@@ -18,6 +31,17 @@ def flow_exergy(fluid, state, T0, p0):
     h0 = PropsSI("H", "T", T0, "P", p0, fluid)
     s0 = PropsSI("S", "T", T0, "P", p0, fluid)
     return (state["h"] - h0) - T0 * (state["s"] - s0)
+
+
+def chemical_exergy_CO(gas, X, m_gas, T0=298.15):
+    """Chemical exergy flow (W) of the CO in the off-gas (oxidation to CO2),
+    including its dilution term: x_CO (eps_CO + R T0 ln x_CO) per mol of gas.
+    X: mole fractions of the gas (dictionary); gas.M in kg/kmol (= g/mol)."""
+    x = X.get("CO", 0.0)
+    if x <= 0.0:
+        return 0.0
+    per_mol = x * (EX_CH_CO + R_UNIVERSAL * T0 * np.log(x))     # J per mol of gas
+    return m_gas * per_mol / (gas.M * 1e-3)
 
 
 def exergy_splitflow(res, hs, gas, m_gas, fluid="CO2", T0=298.15, p0=101325.0):
@@ -56,11 +80,15 @@ def exergy_splitflow(res, hs, gas, m_gas, fluid="CO2", T0=298.15, p0=101325.0):
             "ex_to_co2_W": ex_to_co2, "ex_mid_W": ex_mid}
 
 
-def exergy_plant(P, gas, m_gas, fluid="CO2", T0=298.15, p0=101325.0):
+def exergy_plant(P, gas, m_gas, fluid="CO2", T0=298.15, p0=101325.0, X=None):
     """Exergy analysis of the whole plant with parasitic loads.
     P: dictionary from evaluate_plant() (cycle, gas coupling, parasitic loads,
     cooler and net electrical power).
-    Fan work is counted as fully lost; machines by their efficiency."""
+    Fan work is counted as fully lost; machines by their efficiency.
+    X: gas mole fractions (default: the EAF case) for the chemical exergy of CO."""
+    if X is None:
+        from .heat_source_adv import EAF
+        X = EAF["X"]
     res, hs, par, cp = P["res"], P["hs"], P["par"], P["cooler"]
     base = exergy_splitflow(res, hs, gas, m_gas, fluid, T0, p0)
     d = dict(base["destruction_W"])
@@ -72,8 +100,12 @@ def exergy_plant(P, gas, m_gas, fluid="CO2", T0=298.15, p0=101325.0):
 
     net_el, stack, ex_in = P["net_el"], base["stack_W"], hs["ex_in"]
     balance = ex_in - net_el - sum(d.values()) - stack
+    ex_chem = chemical_exergy_CO(gas, X, m_gas, T0)
     return {"flow_exergy": base["flow_exergy"], "destruction_W": d,
             "base_eff": base["exergy_eff"], "stack_W": stack, "net_el": net_el,
             "ex_in": ex_in, "ex_to_co2_W": base["ex_to_co2_W"],
             "balance_W": balance, "eta_system": net_el / ex_in,
-            "eta_cycle": net_el / base["ex_to_co2_W"]}
+            "eta_cycle": net_el / base["ex_to_co2_W"],
+            "ex_chem_CO_W": ex_chem,
+            "eta_fuel_product": net_el / (ex_in - stack),
+            "eta_total": net_el / (ex_in + ex_chem)}

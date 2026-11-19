@@ -111,3 +111,67 @@ def make_report_figures(sim, hw, prefix, title_suffix=""):
     fig.savefig(p3 + ".pdf")
     plt.close(fig)
     return [p1, p2, p3]
+
+
+# ---------------------------------------------------------------------------
+# Exergy figures (time-resolved account)
+# ---------------------------------------------------------------------------
+# Fixed colour per category (validated categorical order, never reordered).
+EX_COLOURS = {"Net electrical power": "#2a78d6", "Bypassed gas": "#eb6834",
+              "Stack gas": "#1baf7a", "Idle and restart": "#eda100",
+              "Heat exchangers": "#e87ba4", "Turbine and compressor": "#008300",
+              "Cooler": "#6250d6", "Electromechanical and auxiliary": "#e34948"}
+
+
+def make_exergy_figures(df, prefix, title_suffix=""):
+    """df: time-resolved account (W per column, one row per time step).
+    Figure 1: where the exergy of the gas goes over the loop (stacked, MW; the
+    total height is the gas exergy; the plant's own consumption while idle
+    shows as net electrical power below zero).
+    Figure 2: cycle-average split, sorted, with values."""
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    cats = list(EX_COLOURS)
+    t = df["Time (min)"].to_numpy()
+    dt = t[1] - t[0]
+    suffix = f" - {title_suffix}" if title_suffix else ""
+
+    fig, ax = plt.subplots(figsize=(9.2, 4.9))
+    _style(ax)
+    ax.stackplot(t, [df[c].to_numpy() / 1e6 for c in cats],
+                 colors=[EX_COLOURS[c] for c in cats], edgecolor="white", linewidth=0.5)
+    ax.set_xlim(t[0], t[-1] + dt)
+    ax.set_xlabel("Time in the cycle (min)", color=INK)
+    ax.set_ylabel("Exergy flow (MW)", color=INK)
+    ax.set_title("Where the exergy of the flue gas goes" + suffix, color=INK, fontsize=12, loc="left")
+    handles = [plt.Rectangle((0, 0), 1, 1, color=EX_COLOURS[c]) for c in cats]
+    ax.legend(handles, cats, loc="upper center", bbox_to_anchor=(0.5, -0.16), ncol=4,
+              frameon=False, fontsize=9, labelcolor=INK2)
+    fig.tight_layout()
+    p1 = prefix + "1_loop"
+    fig.savefig(p1 + ".png", dpi=200)
+    fig.savefig(p1 + ".pdf")
+    plt.close(fig)
+
+    mean_in = df["ex_in"].mean()
+    vals = {c: df[c].mean() / 1e6 for c in cats}
+    order = sorted(cats, key=lambda c: vals[c])
+    fig, ax = plt.subplots(figsize=(8.6, 4.6))
+    _style(ax)
+    ax.grid(False)
+    ax.grid(True, axis="x", color=GRID, lw=0.6, alpha=0.7)
+    ax.barh(order, [vals[c] for c in order], color=[EX_COLOURS[c] for c in order], height=0.62)
+    for i, c in enumerate(order):
+        ax.text(vals[c] + 0.04, i, f"{vals[c]:.2f} MW  ({vals[c] * 1e6 / mean_in * 100:.1f} %)",
+                va="center", color=INK, fontsize=9.5)
+    ax.set_xlim(0, max(vals.values()) * 1.32)
+    ax.set_xlabel(f"Cycle-average exergy flow (MW); mean gas exergy {mean_in / 1e6:.2f} MW",
+                  color=INK)
+    ax.set_title("Cycle-average exergy account" + suffix, color=INK, fontsize=12, loc="left")
+    fig.tight_layout()
+    p2 = prefix + "2_average"
+    fig.savefig(p2 + ".png", dpi=200)
+    fig.savefig(p2 + ".pdf")
+    plt.close(fig)
+    return [p1, p2]

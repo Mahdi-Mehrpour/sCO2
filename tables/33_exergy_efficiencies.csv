@@ -1,0 +1,11 @@
+﻿Quantity,Value,Unit,Definition
+Physical exergy of the gas (fuel),17.426,MW,"Gas at the heater inlet, dead state 25 C, 101.3 kPa"
+Exergy leaving with the stack gas,1.062,MW,Loss
+Exergy taken from the gas,16.364,MW,Fuel minus stack
+Exergy delivered to the CO2,14.041,MW,Main plus branch heater
+Net electrical power (product),8.233,MW,
+System exergy efficiency,47.245,%,Net electrical / gas exergy; proportional to net power for a given gas
+Fuel-product exergy efficiency,50.313,%,Net electrical / (gas exergy - stack exergy)
+Cycle exergy efficiency,58.634,%,Net electrical / exergy delivered to the CO2
+Chemical exergy of the CO (not recovered),4.356,MW,"Szargut standard exergy, dilution included"
+Total exergy efficiency incl. CO chemical exergy,37.797,%,Net electrical / (physical + chemical)

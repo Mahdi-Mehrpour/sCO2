@@ -1,3 +1,9 @@
+"""Exergy analysis of the design (states, components, efficiencies, figures).
+
+Design: the net-electrical optimum for the mean gas of the measured reference
+cycle (data/results/splitflow_optimum_ref.json: 685 C, 48.4 kg/s).
+
+Run: python scripts/run_exergy_splitflow.py"""
 import inspect
 import json
 from pathlib import Path
@@ -17,18 +23,21 @@ T_OUT, F_OUT = Path("tables"), Path("figures")
 T_OUT.mkdir(exist_ok=True)
 F_OUT.mkdir(exist_ok=True)
 
-with open("data/results/splitflow_optimum.json") as f:
+with open("data/results/splitflow_optimum_ref.json") as f:
     opt = json.load(f)
+M_GAS, T_GAS = opt["m_gas"], opt["T_in_K"]
 D0 = {k: v.default for k, v in inspect.signature(splitflow_adv).parameters.items()}
 
-P = evaluate_plant(opt["y"], opt["T_b"], opt["pr"])
+P = evaluate_plant(opt["y"], opt["T_b"], opt["pr"], T_in=T_GAS, m_gas=M_GAS)
 res, hs = P["res"], P["hs"]
 st, y, m = res["states"], res["y"], hs["m_co2"]
-ex = exergy_plant(P, get_gas(), EAF["m_gas"])
+ex = exergy_plant(P, get_gas(), M_GAS)
 fe, D, eff = ex["flow_exergy"], ex["destruction_W"], ex["base_eff"]
 ex_in, stack, net_el = ex["ex_in"], ex["stack_W"], ex["net_el"]
 total_d = sum(D.values())
 losses = total_d + stack
+print(f"Design: gas {T_GAS - K:.1f} C, {M_GAS:.1f} kg/s | y = {y:.4f}, T_b = {st[11]['T'] - K:.1f} C, "
+      f"stack {hs['T_out'] - K:.1f} C\n")
 
 
 def r(v, n=4):
@@ -103,17 +112,33 @@ rows.append({"Component": "Net electrical power (product)",
              "Share of total losses (%)": ""})
 t_comp = pd.DataFrame(rows)
 
+# ---------------- 33: exergy efficiencies of the plant -----------------------
+t_eff = pd.DataFrame([
+    ("Physical exergy of the gas (fuel)", ex_in / 1e6, "MW", "Gas at the heater inlet, dead state 25 C, 101.3 kPa"),
+    ("Exergy leaving with the stack gas", stack / 1e6, "MW", "Loss"),
+    ("Exergy taken from the gas", (ex_in - stack) / 1e6, "MW", "Fuel minus stack"),
+    ("Exergy delivered to the CO2", ex["ex_to_co2_W"] / 1e6, "MW", "Main plus branch heater"),
+    ("Net electrical power (product)", net_el / 1e6, "MW", ""),
+    ("System exergy efficiency", ex["eta_system"] * 100, "%", "Net electrical / gas exergy; proportional to net power for a given gas"),
+    ("Fuel-product exergy efficiency", ex["eta_fuel_product"] * 100, "%", "Net electrical / (gas exergy - stack exergy)"),
+    ("Cycle exergy efficiency", ex["eta_cycle"] * 100, "%", "Net electrical / exergy delivered to the CO2"),
+    ("Chemical exergy of the CO (not recovered)", ex["ex_chem_CO_W"] / 1e6, "MW", "Szargut standard exergy, dilution included"),
+    ("Total exergy efficiency incl. CO chemical exergy", ex["eta_total"] * 100, "%", "Net electrical / (physical + chemical)"),
+], columns=["Quantity", "Value", "Unit", "Definition"])
+t_eff["Value"] = t_eff["Value"].round(3)
+
 t_states.to_csv(T_OUT / "02_states.csv", index=False, encoding="utf-8-sig")
 t_comp.to_csv(T_OUT / "03_components_exergy.csv", index=False, encoding="utf-8-sig")
+t_eff.to_csv(T_OUT / "33_exergy_efficiencies.csv", index=False, encoding="utf-8-sig")
 
 pd.set_option("display.width", 230)
+pd.set_option("display.max_colwidth", 80)
 print(t_states.to_string(index=False))
 print()
 print(t_comp.to_string(index=False))
-print(f"\nGas exergy in             : {ex_in / 1e6:.4f} MW")
-print(f"Net electrical power      : {net_el / 1e6:.4f} MW")
-print(f"System exergy efficiency  : {ex['eta_system'] * 100:.2f} %")
-print(f"Exergy balance check      : {ex['balance_W'] / 1e6:.6f} MW (should be 0)")
+print()
+print(t_eff.to_string(index=False))
+print(f"\nExergy balance check      : {ex['balance_W'] / 1e6:.6f} MW (should be 0)")
 print(f"Parasitic losses (5 rows) : "
       f"{sum(D[k] for k in ('Gearboxes', 'Generator', 'Compressor motor', 'Cooling tower fan and pump', 'Off-gas fan')) / 1e6:.4f} MW")
 
@@ -135,7 +160,7 @@ for ax, (title, Q, Tg, Tc) in zip(axes[1], [
     ax.set_title(title)
 for ax in axes.flat:
     ax.set_xlabel("Heat transferred (MW)")
-    ax.set_ylabel("Temperature (°C)")
+    ax.set_ylabel("Temperature (C)")
     ax.grid(True)
     ax.legend()
 fig.tight_layout()
@@ -161,5 +186,5 @@ fig.tight_layout()
 fig.savefig(F_OUT / "exergy_destruction.png", dpi=150)
 plt.close(fig)
 
-print(f"\nSaved: {T_OUT}/02_states.csv, 03_components_exergy.csv; "
+print(f"\nSaved: {T_OUT}/02_states.csv, 03_components_exergy.csv, 33_exergy_efficiencies.csv; "
       f"{F_OUT}/ts_diagram.png, heat_exchangers_QT.png, exergy_destruction.png")
