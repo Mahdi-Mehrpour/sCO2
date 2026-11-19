@@ -23,7 +23,7 @@ T_GRID_C = [200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100]   # C
 M_GRID = [5, 8, 12, 16, 20, 25, 30, 36, 42]                       # kg/s
 RESTART = {"t_restart_min": 3.0}      # PLACEHOLDER: idle to full operation
 FIELDS = ["net_if_run", "T7", "m_co2", "bypass", "Q_use", "Q_avail",
-          "T_stack", "p2"]
+          "T_stack", "p2", "eta_cyc", "eta_el"]
 
 
 # ---------------------------------------------------------------------------
@@ -46,11 +46,14 @@ def build_map(hw, gas, y_mode="fixed", log=print, T_grid=None, m_grid=None):
             p = r["point"]
             if p is None:        # nothing converged: treat as not runnable
                 v = dict(net_if_run=-1e6, T7=300.0, m_co2=0.0, bypass=mg,
-                         Q_use=0.0, T_stack=Tc + K, p2=0.0)
+                         Q_use=0.0, T_stack=Tc + K, p2=0.0,
+                         eta_cyc=0.0, eta_el=0.0)
             else:
                 v = dict(net_if_run=p["net_el"], T7=p["T7"], m_co2=p["m_co2"],
                          bypass=p["m_bypass"], Q_use=p["Q_use"],
-                         T_stack=p["T_stack"], p2=p["p2"])
+                         T_stack=p["T_stack"], p2=p["p2"],
+                         eta_cyc=(p["net_shaft"] / p["Q_use"] if p["Q_use"] > 0 else 0.0),
+                         eta_el=(p["eta_el"] if p["Q_use"] > 0 else 0.0))
                 x = r["x"]
             v["Q_avail"] = Q_av
             for k, val in v.items():
@@ -80,6 +83,8 @@ def load_map(path, hw, T_grid=None, m_grid=None):
             or abs(meta["net_el_des"] - hw["net_el_des"]) > 1e-6 * hw["net_el_des"]
             or list(d["T"]) != list(T_grid or T_GRID_C)
             or list(d["m"]) != list(m_grid or M_GRID)):
+        return None
+    if any(k not in d.files for k in FIELDS):      # map made before a field was added
         return None
     return {k: d[k] for k in FIELDS}
 
@@ -141,6 +146,8 @@ def simulate(pm, prof, t_restart_min=RESTART["t_restart_min"], n_cycles=2):
             "state": state[s], "P": P, "Q_use": Q_use,
             "Q_avail": o["Q_avail"][s],
             "m_co2": np.where(run, o["m_co2"][s], 0.0),
+            "eta_cyc": np.where(run, o["eta_cyc"][s], np.nan),
+            "eta_el": np.where(run, o["eta_el"][s], np.nan),
             "bypass": np.where(run, o["bypass"][s], prof["m"]),
             "T7": np.where(run, o["T7"][s], np.nan),
             "n_clipped": o["n_clipped"]}

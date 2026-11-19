@@ -78,8 +78,21 @@ def operate(hw, gas, T_gas, m_gas, y_mode="optimise", ctrl=CONTROL, x0=None):
         if f_hi > -1e-3:
             m_star = m_des                   # the maximum flow already holds the limit
         elif r_min is not None and r_min["T7"] - T7_max > 0.0:
-            m_star = brentq(lambda m: T7_of(m, y) - T7_max, m_min, m_des,
-                            xtol=ctrl["m_xatol_frac"] * m_des)
+            f_lo = r_min["T7"] - T7_max      # > 0
+
+            def g(m):
+                # end values come from the points already solved, so the bracket
+                # is consistent even if a fresh solve differs in the last digits
+                if m >= m_des:
+                    return f_hi
+                if m <= m_min:
+                    return f_lo
+                v = T7_of(m, y)
+                return f_lo if np.isnan(v) else v - T7_max
+            try:
+                m_star = brentq(g, m_min, m_des, xtol=ctrl["m_xatol_frac"] * m_des)
+            except (ValueError, RuntimeError):
+                m_star = m_min               # wide search range, still safe
         else:
             m_star = m_min
         cands = [r_cap]

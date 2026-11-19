@@ -1,0 +1,19 @@
+﻿Parameter,Value,Unit
+Gas inlet temperature,684.541,C
+Gas mass flow,48.389,kg/s
+Branch fraction y,0.395,-
+Branch heater outlet temperature,354.258,C
+Compressor pressure ratio,3.247,-
+Maximum cycle pressure,25.0,MPa
+CO2 mass flow (turbine),81.769,kg/s
+Gas stack temperature,150.111,C
+Cycle shaft power,9.3,MW
+Net electrical power,8.233,MW
+Cycle thermal efficiency,31.184,%
+Heat available above the stack limit,29.829,MW
+Heat recovery (net electrical / heat available),27.601,%
+System exergy efficiency (net electrical / gas exergy),47.245,%
+Exergy lost with the stack gas,1.062,MW
+HTR minimum temperature difference,10.0,K
+LTR minimum temperature difference,33.121,K
+Limiting constraint of the gas coupling,main heater pinch,
