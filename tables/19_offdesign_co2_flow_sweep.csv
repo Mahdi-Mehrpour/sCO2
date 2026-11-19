@@ -1,7 +1,7 @@
 ﻿CO2 flow / design,CO2 flow (kg/s),T7 (C),p max (MPa),T_b (C),Stack (C),Heat used (%),HTR min dT (K),LTR min dT (K),Net electrical (MW),Time (s),Flags
-1.0,60.69,550.0,25.0,380.1,150.0,100.0,11.7,18.9,6.197,0.1,
-0.9,54.62,602.7,23.41,456.9,193.5,93.8,9.8,27.8,5.796,0.5,T7 above the limit; recuperator pinch below the minimum
-0.8,48.55,649.2,21.62,524.1,247.5,86.0,7.7,29.4,5.148,0.2,T7 above the limit; recuperator pinch below the minimum
-0.7,42.48,690.9,19.69,584.6,310.5,76.8,6.1,26.1,4.329,0.2,T7 above the limit; recuperator pinch below the minimum
-0.6,36.41,727.9,17.66,638.4,381.4,66.3,4.9,23.5,3.395,0.2,T7 above the limit; recuperator pinch below the minimum
-0.5,30.34,758.8,15.58,685.0,458.0,54.7,4.2,21.1,2.408,0.3,T7 above the limit; recuperator pinch below the minimum
+1.0,81.77,550.0,25.0,354.3,150.1,100.0,10.0,33.1,8.233,0.1,
+0.9,73.59,584.1,23.19,418.1,179.9,94.8,8.2,31.5,7.39,0.1,T7 above the limit; recuperator pinch below the minimum
+0.8,65.42,613.6,21.26,477.6,219.5,87.8,6.1,29.8,6.338,0.1,T7 above the limit; recuperator pinch below the minimum
+0.7,57.24,638.5,19.25,530.8,268.5,79.0,4.2,28.1,5.144,0.1,T7 above the limit; recuperator pinch below the minimum
+0.6,49.06,658.5,17.18,576.8,325.5,68.7,2.6,26.3,3.873,0.1,T7 above the limit; recuperator pinch below the minimum
+0.5,40.88,672.8,15.11,614.4,388.2,57.1,1.5,24.2,2.603,0.1,T7 above the limit; recuperator pinch below the minimum

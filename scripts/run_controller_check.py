@@ -27,17 +27,18 @@ print(f"Controller placeholders: minimum CO2 flow {CONTROL['m_min_frac'] * 100:.
       f"idle consumption {CONTROL['idle_parasitic_frac'] * hw['P_par_des'] / 1e6:.2f} MW\n")
 
 # (gas temperature in C, gas flow in kg/s), from the design outward
-CASES = [(800, 25), (900, 25), (1000, 25), (1100, 25),
-         (700, 25), (650, 25), (600, 25), (550, 25), (500, 25),
-         (800, 20), (800, 15), (800, 10), (800, 6),
-         (600, 12), (500, 10)]
-OPTIMISE = [(700, 25), (600, 25), (800, 15), (600, 12)]
+Td, mg0 = hw["T_gas_des"] - K, hw["m_gas_des"]
+CASES = [(Td, mg0), (800, mg0), (900, mg0), (1000, mg0), (1100, mg0),
+         (600, mg0), (550, mg0), (500, mg0), (450, mg0),
+         (Td, 40), (Td, 30), (Td, 20), (Td, 12),
+         (550, 25), (450, 20)]
+OPTIMISE = [(600, mg0), (550, mg0), (Td, 30), (550, 25)]
 
 
 def run_case(Tc, mg, y_mode, x0):
     t0 = time.time()
     r = operate(hw, gas, Tc + K, mg, y_mode=y_mode, x0=x0)
-    row = {"Gas (C)": Tc, "Gas flow (kg/s)": mg, "y mode": y_mode,
+    row = {"Gas (C)": round(Tc, 1), "Gas flow (kg/s)": round(mg, 1), "y mode": y_mode,
            "Mode": r["mode"],
            "CO2 flow / design (%)": round(r["m_co2"] / hw["m_des"] * 100, 1),
            "y": round(r["y"], 3),
@@ -51,7 +52,7 @@ def run_case(Tc, mg, y_mode, x0):
            "Net if run (MW)": round(r.get("net_el_if_run", float("nan")) / 1e6, 3),
            "Evaluations": r["n_eval"], "Time (s)": round(time.time() - t0, 1),
            "Flags": "; ".join(r["flags"])}
-    print(f"  {Tc} C, {mg} kg/s, y {y_mode}: {r['mode']}, net {row['Net electrical (MW)']} MW, "
+    print(f"  {Tc:.1f} C, {mg:.1f} kg/s, y {y_mode}: {r['mode']}, net {row['Net electrical (MW)']} MW, "
           f"{row['Time (s)']} s", flush=True)
     return row, r.get("x")
 

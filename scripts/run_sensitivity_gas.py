@@ -1,8 +1,9 @@
 """Quasi-steady sensitivity of the plant to the EAF gas temperature.
 Case A: y and T_b re-optimised (maximum net electrical power) at each gas
-        temperature; pressure ratio at the cap; plant re-sized for the NPV.
+        temperature; pressure ratio fixed at the design value.
 Case B: saved design kept; only the CO2 flow adapts to the gas.
-Gas flow is not varied: net power is proportional to it in this model."""
+Gas flow is not varied: net power is proportional to it in this model.
+Economics is not part of this table (parked)."""
 import json
 from pathlib import Path
 import numpy as np
@@ -10,14 +11,16 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from scipy.optimize import minimize, Bounds
 
+from sco2.heat_source_adv import EAF
 from sco2.plant_splitflow import evaluate_plant
-from sco2.economics_splitflow import build_inputs, fast_economics
-from sco2.settings_splitflow import ECON_BASE
 
 K = 273.15
 DT_REC = 10.0                 # K, minimum temperature difference in HTR and LTR
 PEN = 1.0                     # MW of penalty per K of violation
-T_GAS_C = [600, 700, 800, 900, 1000, 1100]
+T_DES_C = EAF["T_in"] - K
+T7_C = 550.0                  # fixed turbine inlet temperature of the design
+T_GAS_C = [600, 650, T_DES_C, 750, 850, 950, 1050]
+T_GAS_MIN = T7_C + EAF["dT_pinch_heater"] + 10.0   # below this the heater cannot reach T7
 LB, UB = [0.02, 1.0], [0.60, 5.5]          # y, T_b/100 (C)
 
 with open("data/results/splitflow_optimum.json") as f:
@@ -70,28 +73,20 @@ def optimise(Tc, starts):
 
 rows, prev = [], None
 for Tc in T_GAS_C:
-    print(f"Gas inlet {Tc} C: case A (re-optimised)...", flush=True)
+    if Tc < T_GAS_MIN:
+        print(f"Gas inlet {Tc:.1f} C skipped: below T7 + heater pinch + 10 K")
+        continue
+    print(f"Gas inlet {Tc:.1f} C: case A (re-optimised)...", flush=True)
     z = optimise(Tc, [z_design, prev if prev is not None else [0.20, 3.0]])
     prev = list(z)
     PA = run(z[0], z[1], Tc)
     PB = run(z_design[0], z_design[1], Tc)
     hsA, hsB = PA["hs"], PB["hs"]
-    try:
-        ci, e = build_inputs(PA, ECON_BASE)
-        eco = fast_economics(ci, e)
-        capital, cap_kw, npv = eco["TCI"] / 1e6, eco["TCI"] / (eco["W_net"] * 1e3), eco["NPV"] / 1e6
-    except Exception as exc:
-        capital = cap_kw = npv = float("nan")
-        print("  economics failed:", exc)
     flags = []
-    if PA["par"]["W_turbine"] / 1e6 < 8.0:
-        flags.append("turbine below the 8 MW range of the cost correlation")
-    if PA["par"]["W_compressor"] / 1e6 < 1.5:
-        flags.append("compressor below the 1.5 MW range")
     if abs(z[0] - LB[0]) < 1e-3 or abs(z[0] - UB[0]) < 1e-3 or abs(z[1] - UB[1]) < 1e-3:
         flags.append("y or T_b at a bound")
     rows.append({
-        "Gas inlet temperature (C)": Tc,
+        "Gas inlet temperature (C)": round(Tc, 2),
         "Net electrical power A, re-optimised (MW)": PA["net_el"] / 1e6,
         "Net electrical power B, fixed design (MW)": PB["net_el"] / 1e6,
         "Power lost by the fixed design (%)": (1 - PB["net_el"] / PA["net_el"]) * 100,
@@ -101,13 +96,11 @@ for Tc in T_GAS_C:
         "Stack temperature B (C)": hsB["T_out"] - K,
         "Heat used A (% of available)": hsA["Q"] / hsA["Q_max"] * 100,
         "Net electrical efficiency A (%)": PA["eta_el"] * 100,
+        "System exergy efficiency A (%)": PA["net_el"] / hsA["ex_in"] * 100,
         "HTR min dT A (K)": PA["res"]["pinch"]["HTR"]["min_dT"],
         "LTR min dT A (K)": PA["res"]["pinch"]["LTR"]["min_dT"],
         "HTR min dT B (K)": PB["res"]["pinch"]["HTR"]["min_dT"],
         "LTR min dT B (K)": PB["res"]["pinch"]["LTR"]["min_dT"],
-        "Capital A, plant re-sized (M$)": capital,
-        "Capital A (USD/kWe)": cap_kw,
-        "NPV A, plant re-sized (M$)": npv,
         "Limiting constraint A": hsA["binding"],
         "Limiting constraint B": hsB["binding"],
         "Flags": "; ".join(flags)})
@@ -131,22 +124,25 @@ ax.legend()
 ax = axes[0, 1]
 ax.plot(T, df["Stack temperature A (C)"], "o-", label="A")
 ax.plot(T, df["Stack temperature B (C)"], "s--", label="B")
-ax.axhline(150, color="gray", ls=":", label="Minimum stack temperature")
-ax.set_ylabel("Gas stack temperature (°C)")
+ax.axhline(EAF["T_stack_min"] - K, color="gray", ls=":", label="Minimum stack temperature")
+ax.set_ylabel("Gas stack temperature (C)")
 ax.legend()
 ax = axes[1, 0]
-ax.bar(T, df["NPV A, plant re-sized (M$)"], width=60)
-ax.axhline(0, color="k", lw=0.8)
-ax.set_ylabel("NPV of the re-sized plant (M$)")
+ax.plot(T, df["Net electrical efficiency A (%)"], "o-", label="Net electrical efficiency")
+ax.plot(T, df["System exergy efficiency A (%)"], "s--", label="System exergy efficiency")
+ax.set_ylabel("Efficiency, case A (%)")
+ax.legend()
 ax = axes[1, 1]
 ax.plot(T, df["Optimal y (A)"], "o-", color="tab:blue")
 ax.set_ylabel("Optimal branch fraction y (case A)", color="tab:blue")
 ax2 = ax.twinx()
 ax2.plot(T, df["Optimal T_b (A, C)"], "s--", color="tab:red")
-ax2.set_ylabel("Optimal branch outlet temperature (°C)", color="tab:red")
+ax2.set_ylabel("Optimal branch outlet temperature (C)", color="tab:red")
 for ax in axes.flat:
-    ax.set_xlabel("EAF gas inlet temperature (°C)")
+    ax.set_xlabel("EAF gas inlet temperature (C)")
     ax.grid(True)
+fig.suptitle(f"Gas temperature sensitivity, gas flow {EAF['m_gas']:.1f} kg/s, "
+             f"design {T_DES_C:.0f} C")
 fig.tight_layout()
 fig.savefig("figures/gas_temperature_sensitivity.png", dpi=150)
 print("\nSaved: tables/12_gas_temperature_sensitivity.csv, figures/gas_temperature_sensitivity.png")

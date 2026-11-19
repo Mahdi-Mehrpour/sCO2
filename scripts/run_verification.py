@@ -363,13 +363,13 @@ def t_flow():
 
 def t_trend():
     v = [evaluate_plant(**CASE, check_pinch=False, T_in=Tc + K)["net_el"]
-         for Tc in (700, 800, 900)]
+         for Tc in (T_in - K - 100, T_in - K, T_in - K + 100)]
     d = v[1] / P["net_el"] - 1
-    return d, "net power rises with gas temperature (700 < 800 < 900 C); the 800 C value equals the design", (v[0] < v[1] < v[2]) and abs(d) < 1e-9
+    return d, "net power rises with gas temperature (design -100 K < design < design +100 K); the middle value equals the design", (v[0] < v[1] < v[2]) and abs(d) < 1e-9
 
 
 test("Trends", "Net power with half the gas flow / design - 0.5", t_flow)
-test("Trends", "Net power at 800 C / design - 1, with 700 and 900 C ordering", t_trend)
+test("Trends", "Net power at the design gas temperature / design - 1, with ordering at +-100 K", t_trend)
 
 # ======================================================================
 # Output
