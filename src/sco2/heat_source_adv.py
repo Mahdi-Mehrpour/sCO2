@@ -10,9 +10,9 @@ from CoolProp.CoolProp import PropsSI
 
 # Default EAF case (all values are assumptions, to be replaced by real data)
 EAF = {
-    "T_in": 1073.15,          # K, gas temperature at the heat exchanger inlet
+    "T_in": 957.69,          # K, gas temperature at the heat exchanger inlet
     "p": 101325.0,            # Pa
-    "m_gas": 25.0,            # kg/s
+    "m_gas": 48.389,            # kg/s
     "X": {"N2": 0.68, "CO2": 0.12, "H2O": 0.10, "O2": 0.09, "CO": 0.01},
     "T_stack_min": 423.15,    # K, lowest allowed gas outlet temperature
     "dT_pinch_heater": 20.0,  # K, minimum gas-to-CO2 temperature difference

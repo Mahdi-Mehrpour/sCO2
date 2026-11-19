@@ -12,7 +12,6 @@ import pandas as pd
 FAST = [("Plant performance", "scripts/run_plant_splitflow.py"),
         ("Exergy analysis, states and figures", "scripts/run_exergy_splitflow.py"),
         ("Cooling options", "scripts/run_cooling_splitflow.py"),
-        ("Economics", "scripts/run_economics_splitflow.py"),
         ("Schematic", "scripts/run_schematic_splitflow.py"),
         ("Assumptions", "scripts/make_assumptions_splitflow.py")]
 SLOW = [("Gas temperature sensitivity", "scripts/run_sensitivity_gas.py")]

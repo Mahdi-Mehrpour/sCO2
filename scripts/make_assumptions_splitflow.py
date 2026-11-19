@@ -11,10 +11,7 @@ from sco2.parasitics_splitflow import PARASITIC
 from sco2.cooling_splitflow import COOLING
 from sco2.operation_splitflow import OPERATION
 from sco2.plant_splitflow import evaluate_plant, DRIVE
-from sco2.economics_eaf import run
-from sco2.economics_splitflow import build_inputs
-from sco2.settings_splitflow import (ECON_BASE, LIMITS, HEATER_POSITION,
-                                     NOT_MODELLED)
+from sco2.settings_splitflow import LIMITS, HEATER_POSITION, NOT_MODELLED
 
 K = 273.15
 PH, OPT, CHO, REF = "placeholder", "optimised", "design choice", "reference"
@@ -23,8 +20,6 @@ with open("data/results/splitflow_optimum.json") as f:
     opt = json.load(f)
 D = {k: v.default for k, v in inspect.signature(splitflow_adv).parameters.items()}
 P = evaluate_plant(opt["y"], opt["T_b"], opt["pr"])
-ci, e = build_inputs(P, ECON_BASE)
-R = run(ci, e)
 st, W = P["res"]["states"], COOLING["wet_tower"]
 
 A = []
@@ -43,8 +38,8 @@ add("General", "Cycle quantities are per 1 kg of CO2 through the turbine; absolu
 add("General", "All cycle components are adiabatic; no leakage", note="model scope")
 
 add("Heat source", HEATER_POSITION, note=CHO)
-add("Heat source", "Gas inlet temperature", EAF["T_in"] - K, "C", PH)
-add("Heat source", "Gas mass flow", EAF["m_gas"], "kg/s", PH)
+add("Heat source", "Gas inlet temperature (design basis: mean of the measured reference cycle, Dal Magro 2017, Fig. 3.40)", EAF["T_in"] - K, "C", REF)
+add("Heat source", "Gas mass flow (mean of the measured flow, 1.34e5 Nm3/h; density 1.3 kg/Nm3 assumed)", EAF["m_gas"], "kg/s", PH)
 add("Heat source", "Gas pressure (no pressure drop in the thermodynamic model)", EAF["p"] / 1e3, "kPa", PH)
 add("Heat source", "Gas composition (mole fractions)", ", ".join(f"{k} {v}" for k, v in EAF["X"].items()), "", PH)
 add("Heat source", "Ideal-gas mixture, NASA polynomials (Cantera gri30); dust and chemical exergy of CO neglected", note="model")
@@ -102,39 +97,11 @@ for L in LIMITS:
                  + (" VIOLATED" if margin < 0 else ""))
     add("Limits", L["name"], L["value"], L["unit"], note)
 
-desc = {"cepci_target": ("Cost year index (CEPCI of the cost year)", "-", REF),
-        "f_inst": ("Installation and auxiliaries, fraction of purchased cost", "-", REF),
-        "r": ("Discount rate", "1/yr", "base case, chosen"),
-        "N": ("Economic life", "yr", "base case, chosen"),
-        "hours": ("Operating hours (calendar days x 24 h x availability)", "h/yr", PH),
-        "c_e": ("Value of the electricity (avoided purchase price)", "USD/kWh", "placeholder: replace with the site value"),
-        "c_OM": ("O&M cost", "USD/kWe-yr", REF),
-        "er": ("Escalation of O&M and water price", "1/yr", REF),
-        "dr": ("Output degradation", "1/yr", REF),
-        "salvage": ("Salvage value, fraction of total capital investment", "-", REF),
-        "water_price": ("Makeup water price", "USD/m3", PH),
-        "c_gas": ("Cost of the waste-heat exergy (treated as free)", "USD/GJ", CHO)}
-for k, (text, unit, note) in desc.items():
-    add("Economics", text, getattr(e, k), unit, note)
-add("Economics", "Heat exchanger UA used for cost: larger of end-point and segmented UA", note=CHO)
-add("Economics", "Currency: USD, nominal values of the cost references, no conversion", note=CHO)
-
-extra = {"Main heater": "band widened upward (dust, fouling); not validated for EAF gas",
-         "Branch heater": "band widened upward (dust, fouling); not validated for EAF gas",
-         "Cooling tower": "formula reconstructed from the reference text; band assumed"}
-for n, r in R["costs"]["rows"].items():
-    add("Cost data", f"{n}: {r['source']}",
-        f"{r['lo'] / r['PEC'] - 1:+.0%} / {r['hi'] / r['PEC'] - 1:+.0%}", "band",
-        extra.get(n, REF))
-for w in R["costs"]["warnings"]:
-    add("Cost data", f"Validity warning: {w}", note="extrapolation")
+add("Economics", "Not included for now; the cost model stays in the code for the later two-objective optimisation", note="parked")
 
 for t in NOT_MODELLED:
     add("Not included", t, note="not modelled")
 
-add("SPECO", "Physical exergy is not split into thermal and mechanical parts", note="simplification")
-add("SPECO", "Cooler and cooling tower are dissipative: their cost, tower power and water are charged to the product", note="simplification")
-add("SPECO", "O&M is shared in proportion to each component's purchased cost", note="simplification")
 add("Numerics", "Convergence tolerance on h of state 5 (recuperator loop)", 1e-3, "J/kg", "model")
 add("Numerics", "Recuperator pinch check with 30 segments; heaters and cooler with 20 to 30 segments; pressure linear along each side", note="model")
 
