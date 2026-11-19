@@ -1,0 +1,11 @@
+﻿Component,Size,Purchased cost (k$),Share (%),Cost rate (USD/h),Basis
+Turbine,11.71 MW shaft,4088.3654411750176,22.551766199920547,90.85708015269832,[W19] radial turbine
+Gearbox + generator,11.71 MW / 11.25 MWe,1027.7734079805996,5.669284200928117,22.840544039249878,[W19] gearbox + generator
+Compressor + motor,2.41 MW / 2.56 MWe,2990.476112252657,16.49571670642694,66.45832710775962,[W19] integrally geared compressor + synchronous motor
+HTR,UA 612 kW/K,1613.414233386178,8.899728044979218,35.8554313286,"[W19] recuperator, UA^0.7544"
+LTR,UA 332 kW/K,1015.8750426442073,5.6036518211694135,22.576122781265664,"[W19] recuperator, UA^0.7544"
+Main heater,"6185 m2 (UA 247 kW/K, U 40)",2186.4641993888135,12.060719653999774,48.59050783820834,area based: UA/U x USD/m2 x (1 + fouling) x f_T
+Branch heater,"4027 m2 (UA 161 kW/K, U 40)",1423.7384000027148,7.853460261488325,31.64020334942057,area based: UA/U x USD/m2 x (1 + fouling) x f_T
+Cooler,UA 1152 kW/K,2885.0108152049042,15.913961294527528,64.11453737441283,"[WDS16] shell and tube, linear in segmented UA"
+Cooling tower,20.5 MWth,897.6861185069308,4.951711816560147,19.949571728526244,"power law in heat rejected, calibrated to the earlier model"
+Total purchased equipment,,18128.80377054202,100.0,402.88232570014145,

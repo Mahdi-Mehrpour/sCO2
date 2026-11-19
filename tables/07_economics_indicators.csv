@@ -1,0 +1,10 @@
+﻿Indicator,Base,Low-capital case,High-capital case
+Net electrical power (MW),8.233,,
+Total capital investment (M$),24.777,17.429,36.963
+Capital per kWe (USD/kWe),3009.509,2116.958,4489.629
+LCOE (USD/MWh),58.826,45.168,81.475
+NPV (M$),11.27,18.54,-0.785
+IRR (%),14.053,21.517,7.699
+Simple payback (yr),6.315,4.374,9.683
+Discounted payback (yr),9.361,5.653,inf
+SPECO unit cost of electricity (USD/MWh),54.243,,

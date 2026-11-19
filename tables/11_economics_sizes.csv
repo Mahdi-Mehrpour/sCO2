@@ -1,0 +1,6 @@
+﻿Heat exchanger,Duty (MW),End-point LMTD (K),UA end-point (kW/K),UA segmented (kW/K),UA used for cost (kW/K),Segmented / end-point
+HTR,8.496,13.56,626.544,612.162,626.544,0.977
+LTR,18.652,44.802,416.326,331.529,416.326,0.796
+Main heater,15.232,60.09,253.478,247.402,253.478,0.976
+Branch heater,14.592,73.445,198.675,161.099,198.675,0.811
+Cooler,20.523,38.641,531.13,1152.15,1152.15,2.169
