@@ -22,7 +22,8 @@ res, hs, par, cp = P["res"], P["hs"], P["par"], P["cooler"]
 
 gb, gen, mot = (PARASITIC["eta_gearbox"], PARASITIC["eta_generator"],
                 PARASITIC["eta_motor"])
-elec = {"P_gen": par["W_turbine"] * gb * gen,
+elec = {"gas_dp": PARASITIC["gas_dp_total"],
+        "P_gen": par["W_turbine"] * gb * gen,
         "P_motor": par["W_compressor"] / (gb * mot),
         "fan_tower": cp["P_aux"], "fan_gas": par["fan_gas"],
         "loss_gb": par["loss_gearbox"], "loss_gen": par["loss_generator"],

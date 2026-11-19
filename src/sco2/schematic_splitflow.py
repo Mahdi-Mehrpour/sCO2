@@ -172,7 +172,8 @@ def draw_schematic_splitflow(res, hs=None, eaf=None, elec=None,
         name(0.45, 3.95, f"Motor\n{elec['P_motor'] / 1e6:.2f} MWe")
         name(17.55, 5.35, tb, ha="left")
         name(18.65, 6.3, f"Generator\n{elec['P_gen'] / 1e6:.2f} MWe")
-        name(2.0, 8.6, f"Off-gas fan\n{elec['fan_gas'] / 1e6:.2f} MWe")
+        name(2.0, 8.45, f"Induced-draft fan\n{elec['fan_gas'] / 1e6:.2f} MWe"
+             + (f"\n\u0394p = {elec['gas_dp'] / 1e3:.1f} kPa" if elec.get("gas_dp") else ""))
         name(4.4, 2.0, cl.replace("Cooler", "Cooler (water loop\nto wet tower)")
              + f"\nfan + pump {elec['fan_tower'] / 1e6:.2f} MWe"
              + f"\nmakeup water {elec['makeup']:.1f} kg/s", ha="left")
@@ -193,6 +194,10 @@ def draw_schematic_splitflow(res, hs=None, eaf=None, elec=None,
         else:
             ax.text(3.6, 9.6, f"Stack {hs['T_out'] - K:.0f} °C", ha="center",
                     va="center", fontsize=8, color=C_GAS, zorder=6)
+        ax.text(3.6, 9.62, f"{hs['T_out'] - K:.0f} \u00b0C", ha="center", va="center",
+                fontsize=8, color=C_GAS, zorder=6)          # gas leaving the branch heater
+        ax.text(17.55, 8.75, f"p = {eaf['p'] / 1e3:.1f} kPa", ha="left", va="center",
+                fontsize=8, color=C_GAS, zorder=6)          # gas pressure (no drop in the model)
         pr = st[2]["p"] / st[1]["p"]
         if elec is not None:
             fans = (elec["fan_tower"] + elec["fan_gas"]) / 1e6
