@@ -1,0 +1,28 @@
+{
+  "z": [
+    0.27011609126747615
+  ],
+  "names": [
+    "x"
+  ],
+  "metrics": {
+    "kind": "simple",
+    "x": 0.27011609126747615,
+    "y": 0.0,
+    "T_b (C)": NaN,
+    "pr": 3.2467532467532467,
+    "p_max (MPa)": 25.0,
+    "Net power, shaft (MW)": 7.376824224067744,
+    "System exergy efficiency (%)": 42.33173451872169,
+    "Cycle thermal efficiency (%)": 42.283973670735804,
+    "Heat taken from the gas (MW)": 17.445910551148483,
+    "Share of the available heat (%)": 58.486149340294645,
+    "Gas stack temperature (C)": 380.981405974532,
+    "CO2 mass flow (kg/s)": 73.89782490548097,
+    "HTR min dT (K)": 23.96511556642821,
+    "LTR min dT (K)": 10.00000641756759,
+    "Main heater min dT (K)": 20.0,
+    "Branch heater min dT (K)": NaN,
+    "Limiting constraint": "heater pinch or stack"
+  }
+}

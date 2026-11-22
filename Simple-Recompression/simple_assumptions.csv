@@ -1,0 +1,20 @@
+﻿Assumption,Value,Unit / note
+Working fluid,CO2 (real gas),properties from CoolProp
+Layout,Simple recompression,one heater
+Turbomachinery,"Main compressor, recompressor, turbine",
+Heat exchangers,"LTR, HTR, gas heater, cooler",
+"Compressor inlet temperature, T1",32.0,C (wet cooling tower)
+"Compressor inlet pressure, p1",7.7,MPa
+Maximum pressure (compressor outlet),25.0,MPa (limit 25 MPa)
+"Pressure ratio, pr",3.247,"- (optimised, at the pressure limit)"
+"Turbine inlet temperature, T7",550,C
+"Recompression fraction, x",0.270,- (optimised)
+"Isentropic efficiency, main compressor / recompressor",0.85 / 0.85,-
+"Isentropic efficiency, turbine",0.90,-
+"Effectiveness, HTR / LTR",0.90 / 0.90,- (enthalpy based)
+"Minimum temperature difference, HTR and LTR",>= 10,K (enforced)
+"Minimum temperature difference, heater (gas - CO2)",20,K
+Relative pressure drop: heater / cooler,2 % / 1 %,of inlet pressure
+"Relative pressure drop: LTR, HTR (each side)","1 %, 1 %",of inlet pressure
+Minimum gas stack temperature,150,C
+Objective,Maximum net shaft power,"shaft power, before generator losses"
