@@ -4,6 +4,7 @@ The design point is rebuilt from the saved optimum (tables/simple_optimum.json, 
 same cycle model, the same fixed conditions and the same gas-heater coupling as scripts/run_cycle_comparison.py.
 Nothing is optimised here. The values below are the design basis; change them only together with a new optimum."""
 import json
+import sys
 from pathlib import Path
 
 from CoolProp.CoolProp import PropsSI
@@ -11,8 +12,10 @@ from CoolProp.CoolProp import PropsSI
 from sco2.cycle_adv import recompression_adv, _pinch_profile
 from sco2.heat_source_adv import EAF, couple_heater
 from sco2.plant_splitflow import get_gas
+sys.path.insert(0, str(Path(__file__).resolve().parent / "Gas Heater"))   # heater.py lives in its own folder
+sys.path.insert(0, str(Path(__file__).resolve().parent / "Cooler"))       # air_cooler.py lives in its own folder
 from heater import ua_design
-from cooler import design_ua, CP_AIR, R_AIR, P_ATM
+from air_cooler import design_ua, CP_AIR, R_AIR, P_ATM
 
 K = 273.15
 FLUID = "CO2"
@@ -76,3 +79,13 @@ def cooler_design(res, hs, x):
     P_fan = (m_air / rho) * AIR["fan_dp"] / AIR["eta_fan"]
     return {"co2_in": st[10], "m_co2": m_co2, "dp": DP_COOLER, "T_air_in": AIR["T_in"], "m_air": m_air, "UA": UA,
             "Q": Q, "T1": st[1]["T"], "P_fan": P_fan}
+
+
+def water_cooler_design(res, hs, x):
+    """Inputs of the water-cooled cooler (straight-channel PCHE fed by a wet cooling tower): CO2 inlet state (state 10),
+    outlet state (state 1) and flow (1 - x) m. The same duty as the dry air cooler; the geometry, the water flow and the
+    tower are derived in Cooler/cooler_resistance_shares.py."""
+    st, m = res["states"], hs["m_co2"]
+    m_co2 = (1.0 - x) * m
+    return {"co2_in": st[10], "co2_out": st[1], "m_co2": m_co2, "dp": DP_COOLER,
+            "Q": m_co2 * (st[10]["h"] - st[1]["h"]), "T1": st[1]["T"]}

@@ -1,0 +1,17 @@
+parameter,value,unit,description,source
+d_ch,1.9e-3,m,semicircular channel diameter (hot side),Nikitin Kato & Ngo (2006) Int. J. Refrig. 29 807-814 Table 1
+t_plate,1.63e-3,m,plate thickness,Nikitin et al. (2006)
+pitch_long,4.5e-3,m,zigzag pitch (hot side; used only for the core length),Nikitin et al. (2006)
+zz_angle_deg,32.5,deg,zigzag angle from the axis (bend 115 deg; used only to convert channel length to core length),Nikitin et al. (2006)
+k_wall,18.0,W/m.K,plate conductivity (SS316L at 100-450 C),assumption
+G_hot,300.0,kg/m2.s,design mass flux on the hot (low-pressure) side; sets the number of channels,assumption
+Nu_c,0.1696,-,Nu = c Re^a Pr^b (zigzag),Ngo et al. (2007) Exp. Therm. Fluid Sci. 32 560-570 Eq. 29
+Nu_a,0.629,-,exponent of Re in Nu,Ngo et al. (2007) Eq. 29
+Nu_b,0.317,-,exponent of Pr in Nu,Ngo et al. (2007) Eq. 29
+f_c,0.1924,-,f = c Re^d (zigzag),Ngo et al. (2007) Eq. 31
+f_d,-0.091,-,exponent of Re in f,Ngo et al. (2007) Eq. 31
+f_mult,4.0,-,dp = f_mult f (L/Dh) G^2/(2 rho): f is a Fanning factor (Ngo Eq. 23; Nikitin Eq. 10 same form) so 4,verified
+Re_min,3500,-,lower Re limit of the correlation,Ngo et al. (2007) Eq. 29 and 31
+Re_max,22000,-,upper Re limit of the correlation,Ngo et al. (2007) Eq. 29 and 31
+Pr_min,0.75,-,lower Pr limit of the correlation,Ngo et al. (2007) Eq. 29
+Pr_max,2.2,-,upper Pr limit of the correlation,Ngo et al. (2007) Eq. 29

@@ -7,13 +7,18 @@ C  Air flow at two ambient temperatures (UA following the air flow, air side car
 D  Fan control: the air flow needed to hold T1 = 32 C at each ambient temperature, and the fan power. Air flows above
    the assumed fan limit (1.3 times design) cannot be reached.
 The CO2 inlet state and flow are the design values in every case; in the cycle they move as well (this is a component check).
-Output: tables/cooler_checks.csv, figures/cooler_checks.png.
-Run from the repository folder:  python "Simple Recompression - Off-Design/scripts/check_cooler.py" """
+Output: tables/air_cooler_checks.csv, figures/air_cooler_checks.png.
+Run from the repository folder:  python "Simple Recompression - Off-Design/scripts/Cooler/check_air_cooler.py" """
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-import cooler as cl
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))   # scripts folder: design_point, ua_scaling
+sys.path.insert(0, str(Path(__file__).resolve().parent))          # this folder first: air_cooler
+import air_cooler as cl
 import design_point as dp
 from ua_scaling import ua_ratio
 
@@ -94,7 +99,7 @@ for t in (5, 10, 15, 20, 25, 26, 27, 28, 30, 33, 35, 40):
 dp.TABLES.mkdir(parents=True, exist_ok=True)
 dp.FIGURES.mkdir(parents=True, exist_ok=True)
 df = pd.DataFrame(rows)
-df.round(5).to_csv(dp.TABLES / "cooler_checks.csv", index=False, encoding="utf-8-sig")
+df.round(5).to_csv(dp.TABLES / "air_cooler_checks.csv", index=False, encoding="utf-8-sig")
 
 TC = 30.98
 fig, ax = plt.subplots(1, 3, figsize=(15.0, 4.4))
@@ -136,5 +141,5 @@ for a in ax:
     a.grid(True, color="#dddddd", lw=0.6)
 fig.suptitle("Off-design dry air cooler at the design UA (design ambient 25 C)", fontsize=10)
 fig.tight_layout()
-fig.savefig(dp.FIGURES / "cooler_checks.png", dpi=170)
-print(f"\nSaved: {dp.TABLES / 'cooler_checks.csv'} and {dp.FIGURES / 'cooler_checks.png'}")
+fig.savefig(dp.FIGURES / "air_cooler_checks.png", dpi=170)
+print(f"\nSaved: {dp.TABLES / 'air_cooler_checks.csv'} and {dp.FIGURES / 'air_cooler_checks.png'}")

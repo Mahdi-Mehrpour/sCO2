@@ -5,8 +5,16 @@ A  Design: with the design UA and the design inlets and flows the model must ret
 B  Part load: both flows scaled together (inlet states kept), UA fixed: the effectiveness rises as the flow falls.
 C  Recompression fraction: only the LTR cold flow (1 - x) m changes, hot flow and inlet states kept. This is a
    component response, not a cycle: in the cycle the inlet states move as well.
-Output: tables/recuperator_checks.csv, figures/recuperator_checks.png.
-Run from the repository folder:  python "Simple Recompression - Off-Design/scripts/check_recuperators.py" """
+D  Design figure (from the resistance-share tables, if present): segment UA, resistance shares, Re and Pr against the correlation range.
+Output: tables/recuperator_checks.csv, figures/recuperator_checks.png, figures/recuperator_design.png.
+Run from the repository folder:  python "Simple Recompression - Off-Design/scripts/LTR & HTR/check_recuperators.py" """
+import sys
+from pathlib import Path
+
+HERE = Path(__file__).resolve().parent
+sys.path.insert(0, str(HERE.parent))                                  # scripts/: design_point.py, ua_scaling.py
+sys.path.insert(0, str(HERE))                                         # this folder first, so its own recuperator.py is the one imported
+
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -99,3 +107,56 @@ fig.suptitle("Off-design recuperator model at the design UA (dashed line = desig
 fig.tight_layout()
 fig.savefig(dp.FIGURES / "recuperator_checks.png", dpi=170)
 print(f"\nSaved: {dp.TABLES / 'recuperator_checks.csv'} and {dp.FIGURES / 'recuperator_checks.png'}")
+
+
+def design_figure():
+    """Design-point figure: segment conductances, resistance shares, Reynolds and Prandtl numbers against the correlation range."""
+    GREY, DARK = "#888888", "#0f3f7d"
+    RE_RANGE, PR_RANGE = (3500, 22000), (0.75, 2.2)                       # Ngo et al. (2007) validity range
+    if not ((dp.TABLES / "HTR_resistance_shares.csv").exists() and (dp.TABLES / "LTR_resistance_shares.csv").exists()):
+        print("\nDesign figure skipped: run recuperator_resistance_shares.py first")
+        return
+    htr = pd.read_csv(dp.TABLES / "HTR_resistance_shares.csv")
+    ltr = pd.read_csv(dp.TABLES / "LTR_resistance_shares.csv")
+    n = len(htr)
+
+    fig, ax = plt.subplots(2, 2, figsize=(13, 9))
+
+    a = ax[0, 0]
+    a.plot(htr["seg"], htr["UA_i (W/K)"] / 1e3, "o-", color=BLUE, ms=4, label=f"HTR (UA {htr['UA_i (W/K)'].sum() / 1e6:.3f} MW/K)")
+    a.plot(ltr["seg"], ltr["UA_i (W/K)"] / 1e3, "o-", color=ORANGE, ms=4, label=f"LTR (UA {ltr['UA_i (W/K)'].sum() / 1e6:.3f} MW/K)")
+    a.set_xlabel("segment (1 = cold end)"); a.set_ylabel("segment conductance UA$_i$ (kW/K)")
+    a.set_title("(a) Equal duty per segment, unequal area"); a.legend(frameon=False); a.grid(alpha=0.3)
+
+    b = ax[0, 1]
+    for df, name, c in ((htr, "HTR", BLUE), (ltr, "LTR", ORANGE)):
+        b.plot(df["seg"], df["f_hot"], "-", color=c, label=f"{name} hot side")
+        b.plot(df["seg"], df["f_cold"], "--", color=c, label=f"{name} cold side")
+        b.plot(df["seg"], df["f_wall"], ":", color=c, label=f"{name} wall")
+    b.set_xlabel("segment (1 = cold end)"); b.set_ylabel("share of the segment resistance"); b.set_ylim(0, 0.65)
+    b.set_title("(b) Resistance shares"); b.legend(frameon=False, fontsize=9, ncol=2); b.grid(alpha=0.3)
+
+    c = ax[1, 0]
+    for df, name, col in ((htr, "HTR", BLUE), (ltr, "LTR", ORANGE)):
+        c.plot(df["seg"], df["Re_hot"], "-", color=col, label=f"{name} hot side")
+        c.plot(df["seg"], df["Re_cold"], "--", color=col, label=f"{name} cold side")
+    c.axhspan(*RE_RANGE, color=GREY, alpha=0.15)
+    c.set_ylim(0, 24000); c.set_xlabel("segment (1 = cold end)"); c.set_ylabel("Reynolds number (-)")
+    c.text(15.5, 22500, "validity range of the correlation", ha="center", fontsize=10, color=DARK)
+    c.set_title("(c) Reynolds number"); c.legend(frameon=False, fontsize=9, loc="lower right", ncol=2); c.grid(alpha=0.3)
+
+    d = ax[1, 1]
+    for df, name, col in ((htr, "HTR", BLUE), (ltr, "LTR", ORANGE)):
+        d.plot(df["seg"], df["Pr_hot"], "-", color=col, label=f"{name} hot side")
+        d.plot(df["seg"], df["Pr_cold"], "--", color=col, label=f"{name} cold side")
+    d.axhspan(*PR_RANGE, color=GREY, alpha=0.15)
+    d.set_ylim(0.5, 2.4); d.set_xlabel("segment (1 = cold end)"); d.set_ylabel("Prandtl number (-)")
+    d.text(15.5, 2.28, "validity range of the correlation", ha="center", fontsize=10, color=DARK)
+    d.set_title("(d) Prandtl number"); d.legend(frameon=False, fontsize=9, loc="upper right", ncol=2, bbox_to_anchor=(1.0, 0.92)); d.grid(alpha=0.3)
+
+    fig.tight_layout()
+    fig.savefig(dp.FIGURES / "recuperator_design.png", dpi=200)
+    print(f"Wrote {dp.FIGURES / 'recuperator_design.png'}")
+
+
+design_figure()
