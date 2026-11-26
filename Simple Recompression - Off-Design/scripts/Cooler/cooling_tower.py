@@ -41,7 +41,7 @@ class CoolingTower:
         lo, hi = T_wb + 0.05, T_hot - 1e-3
         if hi <= lo:
             return hi
-        for _ in range(80):
+        for _ in range(45):                             # bisection to about 1e-11 K
             mid = 0.5 * (lo + hi)
             if merkel_number(T_wb, mid, T_hot, LG) > Me_avail:
                 lo = mid
