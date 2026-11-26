@@ -12,6 +12,7 @@ from sco2.cycle_adv import recompression_adv, _pinch_profile
 from sco2.heat_source_adv import EAF, couple_heater
 from sco2.plant_splitflow import get_gas
 from heater import ua_design
+from cooler import design_ua, CP_AIR, R_AIR, P_ATM
 
 K = 273.15
 FLUID = "CO2"
@@ -26,6 +27,7 @@ PR = P_MAX / P1
 T7 = 550.0 + K
 N_SEG = 30                                            # equal-duty segments of the recuperators (as in the cycle model)
 DP = {"HTR": (0.01, 0.01), "LTR": (0.01, 0.01)}       # pressure drop (hot, cold) as a fraction of the inlet pressure
+DP_COOLER = 0.01                                      # CO2-side pressure drop of the cooler (fraction of inlet pressure)
 DP_HEATER = 0.02                                      # CO2-side pressure drop of the gas heater (fraction of inlet pressure)
 GAS = get_gas()
 
@@ -58,3 +60,19 @@ def heater_design(res, hs):
     return {"T_gas_in": EAF["T_in"], "m_gas": EAF["m_gas"], "co2_in": res["states"][6], "m_co2": hs["m_co2"],
             "dp": DP_HEATER, "UA": ua_design(hs), "Q": hs["Q"], "T_gas_out": hs["T_out"],
             "T7": res["states"][7]["T"], "min_dT": hs["min_dT"]}
+
+
+# dry air cooler (placeholders, as in the earlier cooling module): design ambient 25 C, air warms by 10 K, fan 200 Pa, eta 0.65
+AIR = {"T_in": 25.0 + K, "dT": 10.0, "fan_dp": 200.0, "eta_fan": 0.65}
+
+
+def cooler_design(res, hs, x):
+    """Inputs and design UA of the dry air cooler: CO2 inlet state (state 10) and flow (1 - x) m, air inlet temperature,
+    design air flow and design fan power. UA by the same 30-segment method as the earlier cooling module."""
+    st, m = res["states"], hs["m_co2"]
+    m_co2 = (1.0 - x) * m
+    UA, m_air, Q = design_ua(st[10], st[1], m_co2, DP_COOLER, AIR["T_in"], AIR["dT"])
+    rho = P_ATM / (R_AIR * AIR["T_in"])
+    P_fan = (m_air / rho) * AIR["fan_dp"] / AIR["eta_fan"]
+    return {"co2_in": st[10], "m_co2": m_co2, "dp": DP_COOLER, "T_air_in": AIR["T_in"], "m_air": m_air, "UA": UA,
+            "Q": Q, "T1": st[1]["T"], "P_fan": P_fan}
